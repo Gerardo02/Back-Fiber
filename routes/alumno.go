@@ -80,6 +80,41 @@ func GetAlumno(c *fiber.Ctx) error {
 
 }
 
+func UpdateAlumno(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+
+	var alumno models.Alumno
+
+	if err != nil {
+		return c.Status(400).JSON("Please ensure that id is an integer")
+	}
+
+	if err := findAlumno(id, &alumno); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	type UpdatedAlumno struct {
+		Nombre    string `json:"nombre"`
+		Matricula string `json:"matricula"`
+	}
+
+	var updateData UpdatedAlumno
+
+	if err := c.BodyParser(&updateData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	alumno.Nombre = updateData.Nombre
+	alumno.Matricula = updateData.Matricula
+
+	database.Database.Db.Save(&alumno)
+
+	responseAlumno := CreateResponseAlumno(alumno)
+
+	return c.Status(200).JSON(responseAlumno)
+
+}
+
 func DeleteAlumno(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 

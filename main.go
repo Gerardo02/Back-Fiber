@@ -19,6 +19,10 @@ func setupRoutes(app *fiber.App) {
 	app.Get("/alumnos", routes.GetAlumnos)
 	app.Get("/alumno/:id", routes.GetAlumno)
 	app.Delete("/alumnos/:id", routes.DeleteAlumno)
+	app.Put("/alumnos/:id", routes.UpdateAlumno)
+
+	// COntrol escolar
+	app.Post("/control", routes.CreateControlEscolar)
 }
 
 func main() {
