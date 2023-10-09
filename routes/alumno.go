@@ -2,6 +2,7 @@ package routes
 
 import (
 	"errors"
+	"time"
 
 	"github.com/Gerardo02/Back-Fiber/database"
 	"github.com/Gerardo02/Back-Fiber/models"
@@ -9,18 +10,20 @@ import (
 )
 
 type Alumno struct {
-	ID                  uint   `json:"id" gorm:"primaryKey"`
-	ControlEscolarRefer int    `json:"control_escolar_id"`
-	Nombre              string `json:"nombre"`
-	Matricula           string `json:"matricula"`
+	ID             uint           `json:"id" gorm:"primaryKey"`
+	CreatedAt      time.Time      `json:"fecha_inscripcion"`
+	ControlEscolar ControlEscolar `json:"control_escolar"`
+	Nombre         string         `json:"nombre"`
+	Matricula      string         `json:"matricula"`
 }
 
-func CreateResponseAlumno(alumnoModel models.Alumno) Alumno {
+func CreateResponseAlumno(alumnoModel models.Alumno, controlEscolar ControlEscolar) Alumno {
 	return Alumno{
-		ID:                  alumnoModel.ID,
-		ControlEscolarRefer: alumnoModel.ControlEscolarRefer,
-		Nombre:              alumnoModel.Nombre,
-		Matricula:           alumnoModel.Matricula,
+		ID:             alumnoModel.ID,
+		CreatedAt:      alumnoModel.CreatedAt,
+		ControlEscolar: controlEscolar,
+		Nombre:         alumnoModel.Nombre,
+		Matricula:      alumnoModel.Matricula,
 	}
 }
 
@@ -41,8 +44,16 @@ func CreateAlumno(c *fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 
+	var control models.ControlEscolar
+
+	if err := findControl(alumno.ControlEscolarRefer, &control); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
 	database.Database.Db.Create(&alumno)
-	responseAlumno := CreateResponseAlumno(alumno)
+
+	responseControl := CreateResponseControl(control)
+	responseAlumno := CreateResponseAlumno(alumno, responseControl)
 
 	return c.Status(200).JSON(responseAlumno)
 }
@@ -53,8 +64,15 @@ func GetAlumnos(c *fiber.Ctx) error {
 	database.Database.Db.Find(&alumnos)
 	responseAlumnos := []Alumno{}
 
+	var control models.ControlEscolar
+
 	for _, alumno := range alumnos {
-		responseAlumno := CreateResponseAlumno(alumno)
+
+		if err := findControl(alumno.ControlEscolarRefer, &control); err != nil {
+			return c.Status(400).JSON(err.Error())
+		}
+		responseControl := CreateResponseControl(control)
+		responseAlumno := CreateResponseAlumno(alumno, responseControl)
 		responseAlumnos = append(responseAlumnos, responseAlumno)
 	}
 
@@ -75,7 +93,14 @@ func GetAlumno(c *fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 
-	responseAlumno := CreateResponseAlumno(alumno)
+	var control models.ControlEscolar
+
+	if err := findControl(alumno.ControlEscolarRefer, &control); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	responseControl := CreateResponseControl(control)
+	responseAlumno := CreateResponseAlumno(alumno, responseControl)
 	return c.Status(200).JSON(responseAlumno)
 
 }
@@ -109,7 +134,14 @@ func UpdateAlumno(c *fiber.Ctx) error {
 
 	database.Database.Db.Save(&alumno)
 
-	responseAlumno := CreateResponseAlumno(alumno)
+	var control models.ControlEscolar
+
+	if err := findControl(alumno.ControlEscolarRefer, &control); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	responseControl := CreateResponseControl(control)
+	responseAlumno := CreateResponseAlumno(alumno, responseControl)
 
 	return c.Status(200).JSON(responseAlumno)
 

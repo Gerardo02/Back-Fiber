@@ -17,12 +17,13 @@ func setupRoutes(app *fiber.App) {
 
 	app.Post("/alumnos", routes.CreateAlumno)
 	app.Get("/alumnos", routes.GetAlumnos)
-	app.Get("/alumno/:id", routes.GetAlumno)
+	app.Get("/alumnos/:id", routes.GetAlumno)
 	app.Delete("/alumnos/:id", routes.DeleteAlumno)
 	app.Put("/alumnos/:id", routes.UpdateAlumno)
 
-	// COntrol escolar
+	// Control escolar
 	app.Post("/control", routes.CreateControlEscolar)
+	app.Put("/control/:id", routes.UpdateControlEscolar)
 }
 
 func main() {
