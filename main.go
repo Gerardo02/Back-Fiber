@@ -34,6 +34,7 @@ func setupRoutes(app *fiber.App) {
 	app.Get("/admin", routes.GetAllAdministracion)
 	app.Get("/admin/:id", routes.GetAdministracion)
 	app.Post("/admin", routes.CreateAdmin)
+	app.Put("/admin/:id", routes.UpadateAdmin)
 }
 
 func main() {

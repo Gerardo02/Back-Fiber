@@ -2,6 +2,7 @@ package routes
 
 import (
 	"errors"
+	//"log"
 	"time"
 
 	"github.com/Gerardo02/Back-Fiber/database"
@@ -64,13 +65,13 @@ func GetAlumnos(c *fiber.Ctx) error {
 	database.Database.Db.Find(&alumnos)
 	responseAlumnos := []Alumno{}
 
-	var control models.ControlEscolar
-
 	for _, alumno := range alumnos {
 
+		var control models.ControlEscolar
 		if err := findControl(alumno.ControlEscolarRefer, &control); err != nil {
 			return c.Status(400).JSON(err.Error())
 		}
+
 		responseControl := CreateResponseControl(control)
 		responseAlumno := CreateResponseAlumno(alumno, responseControl)
 		responseAlumnos = append(responseAlumnos, responseAlumno)
