@@ -15,6 +15,7 @@ func helloWorld(c *fiber.Ctx) error {
 func setupRoutes(app *fiber.App) {
 	app.Get("/", helloWorld)
 
+	//alumnos
 	app.Post("/alumnos", routes.CreateAlumno)
 	app.Get("/alumnos", routes.GetAlumnos)
 	app.Get("/alumnos/:id", routes.GetAlumno)
@@ -24,6 +25,15 @@ func setupRoutes(app *fiber.App) {
 	// Control escolar
 	app.Post("/control", routes.CreateControlEscolar)
 	app.Put("/control/:id", routes.UpdateControlEscolar)
+	app.Get("/control", routes.GetAllControlEscolar)
+	app.Get("/control/:id", routes.GetControlEscolar)
+	app.Delete("/control/:id", routes.DeleteControlEscolar)
+
+	// Administracion
+
+	app.Get("/admin", routes.GetAllAdministracion)
+	app.Get("/admin/:id", routes.GetAdministracion)
+	app.Post("/admin", routes.CreateAdmin)
 }
 
 func main() {
