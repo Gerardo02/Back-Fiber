@@ -1,7 +1,10 @@
 package main
 
 import (
-	//"github.com/Gerardo02/Back-Fiber/database"
+	"log"
+
+	"github.com/Gerardo02/Back-Fiber/database"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -10,10 +13,10 @@ func helloWorld(c *fiber.Ctx) error {
 }
 
 func main() {
-	//database.ConnectDb()
+	database.ConnectDb()
 	app := fiber.New()
 
 	app.Get("/api", helloWorld)
 
-	app.Listen(":3030")
+	log.Fatal(app.Listen(":3030"))
 }
