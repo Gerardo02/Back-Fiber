@@ -19,6 +19,14 @@ func setupRoutes(app *fiber.App) {
 	app.Post("/api/alumnos", routes.CreateAlumno)
 
 	app.Post("/api/administracion", routes.CreateCuentaAdmin)
+
+	app.Post("/api/permisos", routes.CreatePermiso)
+
+	app.Post("/api/usuarios", routes.CreateUsuarios)
+
+	app.Post("/api/grupos", routes.CreateGrupoActivo)
+
+	app.Post("/api/grupos/aprobados", routes.CreateGrupoConcluido)
 }
 
 func main() {
