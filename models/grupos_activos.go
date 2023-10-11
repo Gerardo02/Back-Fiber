@@ -2,13 +2,13 @@ package models
 
 import "gorm.io/gorm"
 
-type Grupos struct {
+type GruposActivos struct {
 	gorm.Model
 	ID                uint           `json:"id" gorm:"primaryKey"`
 	Nombre            string         `json:"nombre"`
 	CantidadAlumnos   int            `json:"cantidad_de_alumnos"`
-	Finalizado        bool           `json:"finalizado"`
 	Trimestre         int            `json:"trimestre"`
+	ListaAsistencia   string         `json:"lista_asistencia"` //arreglo
 	EspecialidadRefer int            `json:"especialidad_id"`
 	Especialidad      Especialidades `gorm:"foreignKey:EspecialidadRefer"`
 }

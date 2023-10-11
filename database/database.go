@@ -3,6 +3,7 @@ package database
 import (
 	"log"
 
+	"github.com/Gerardo02/Back-Fiber/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -25,7 +26,16 @@ func ConnectDb() {
 	db.Logger = logger.Default.LogMode(logger.Info)
 	log.Println("Running migrations")
 
-	db.AutoMigrate()
+	db.AutoMigrate(
+		&models.Administraciones{},
+		&models.Alumnos{},
+		&models.Especialidades{},
+		&models.GruposActivos{},
+		&models.GruposConcluidos{},
+		&models.Pagos{},
+		&models.Permisos{},
+		&models.Usuarios{},
+	)
 
 	Database = DbInstance{Db: db}
 
