@@ -9,6 +9,6 @@ type RelacionAlumnoGrupo struct {
 	GruposActivosRefer   int              `json:"grupo_activo_id"`
 	GruposAprobadosRefer int              `json:"grupo_aprobado_id"`
 	Alumno               Alumnos          `gorm:"foreignKey:AlumnoRefer"`
-	GruposActivos        GruposActivos    `gorm:"foreignKey:GruposActivosRefer"`
-	GruposConcluidos     GruposConcluidos `gorm:"foreignKey:GruposAprobadosRefer"`
+	GruposActivos        GruposActivos    `gorm:"foreignKey:GruposActivosRefer;default:null"`
+	GruposConcluidos     GruposConcluidos `gorm:"foreignKey:GruposAprobadosRefer;default:null"`
 }

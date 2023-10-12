@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"errors"
+
 	"github.com/Gerardo02/Back-Fiber/database"
 	"github.com/Gerardo02/Back-Fiber/models"
 	"github.com/gofiber/fiber/v2"
@@ -19,6 +21,21 @@ func CreateGruposConcluidosResponse(gruposConcluidosModel models.GruposConcluido
 		Nombre:          gruposConcluidosModel.Nombre,
 		CantidadAlumnos: gruposConcluidosModel.CantidadAlumnos,
 	}
+}
+
+func findGrupoConcluido(id int, grupoConcluido *models.GruposConcluidos) error {
+
+	if id == 0 {
+		return nil
+	}
+
+	database.Database.Db.Find(&grupoConcluido, "id = ?", id)
+
+	if grupoConcluido.ID == 0 {
+		return errors.New("grupo concluido does not exist")
+	}
+
+	return nil
 }
 
 func CreateGrupoConcluido(c *fiber.Ctx) error {

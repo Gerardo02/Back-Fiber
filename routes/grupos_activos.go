@@ -1,6 +1,9 @@
 package routes
 
 import (
+	"errors"
+	"log"
+
 	"github.com/Gerardo02/Back-Fiber/database"
 	"github.com/Gerardo02/Back-Fiber/models"
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +26,22 @@ func CreateGruposActivosResponse(gruposActivosModel models.GruposActivos) Grupos
 		Trimestre:       gruposActivosModel.Trimestre,
 		ListaAsistencia: gruposActivosModel.ListaAsistencia,
 	}
+}
+
+func findGrupoActivo(id int, grupoActivo *models.GruposActivos) error {
+
+	log.Print(id)
+	if id == 0 {
+		return nil
+	}
+
+	database.Database.Db.Find(&grupoActivo, "id = ?", id)
+
+	if grupoActivo.ID == 0 {
+		return errors.New("grupo activo does not exist")
+	}
+
+	return nil
 }
 
 func CreateGrupoActivo(c *fiber.Ctx) error {
