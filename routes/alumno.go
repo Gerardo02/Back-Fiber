@@ -50,54 +50,90 @@ func findAlumno(id int, alumno *models.Alumnos) error {
 	return nil
 }
 
+// func GetAllAlumnos(c *fiber.Ctx) error {
+// 	alumnos := []models.Alumnos{}
+// 	relaciones := []models.RelacionAlumnoGrupo{}
+
+// 	var grupoActivo models.GruposActivos
+// 	var grupoAprobado models.GruposConcluidos
+
+// 	//var relacion models.RelacionAlumnoGrupo
+
+// 	responseAlumnos := []Alumnos{}
+// 	responseGruposActivos := []GruposActivos{}
+// 	responseGruposAprobados := []GruposConcluidos{}
+
+// 	database.Database.Db.Find(&alumnos)
+
+// 	for _, alumno := range alumnos {
+// 		/*
+// 			if err := findAlumnoRelacion(alumno.ID, &relacion); err != nil {
+// 				return c.Status(400).JSON(err.Error())
+// 			}*/
+// 		database.Database.Db.Find(&relaciones, models.RelacionAlumnoGrupo{AlumnoRefer: 1})
+// 		for _, relacion := range relaciones {
+
+// 			/*
+// 				if err := findGrupoActivo(relacion.GruposActivosRefer, &grupoActivo); err != nil {
+// 					return c.Status(400).JSON(err.Error())
+// 				}*/
+
+// 			database.Database.Db.Find(&grupoActivo, "id = ?", relacion.GruposActivosRefer)
+// 			database.Database.Db.Find(&grupoAprobado, "id = ?", relacion.GruposAprobadosRefer)
+
+// 			//log.Print(relacion.GruposActivosRefer)
+
+// 			responseGrupoActivo := CreateGruposActivosResponse(grupoActivo)
+// 			responseGruposActivos = append(responseGruposActivos, responseGrupoActivo)
+
+// 			responseGrupoAprobado := CreateGruposConcluidosResponse(grupoAprobado)
+// 			responseGruposAprobados = append(responseGruposAprobados, responseGrupoAprobado)
+// 			//log.Print(responseGruposActivos)
+// 		}
+// 		// database.Database.Db.Find(&gruposActivos)
+// 		// database.Database.Db.Find(&gruposAprobados)
+// 		responseAlumno := CreateGetResponseAlumnos(alumno, responseGruposActivos, responseGruposAprobados)
+// 		responseAlumnos = append(responseAlumnos, responseAlumno)
+
+// 	}
+// 	return c.Status(200).JSON(responseAlumnos)
+
+// }
+
 func GetAllAlumnos(c *fiber.Ctx) error {
 	alumnos := []models.Alumnos{}
-	relaciones := []models.RelacionAlumnoGrupo{}
-
-	var grupoActivo models.GruposActivos
-	var grupoAprobado models.GruposConcluidos
-
-	//var relacion models.RelacionAlumnoGrupo
-
-	responseAlumnos := []Alumnos{}
-	responseGruposActivos := []GruposActivos{}
-	responseGruposAprobados := []GruposConcluidos{}
-
 	database.Database.Db.Find(&alumnos)
 
+	responseAlumnos := []Alumnos{}
+
 	for _, alumno := range alumnos {
-		/*
-			if err := findAlumnoRelacion(alumno.ID, &relacion); err != nil {
-				return c.Status(400).JSON(err.Error())
-			}*/
-		database.Database.Db.Find(&relaciones, models.RelacionAlumnoGrupo{AlumnoRefer: 1})
+		var relaciones []models.RelacionAlumnoGrupo
+		database.Database.Db.Where("alumno_refer = ?", alumno.ID).Find(&relaciones)
+
+		responseGruposActivos := []GruposActivos{}
+		responseGruposConcluidos := []GruposConcluidos{}
+
 		for _, relacion := range relaciones {
+			if relacion.GruposActivosRefer != 0 {
+				var grupoActivo models.GruposActivos
+				database.Database.Db.First(&grupoActivo, relacion.GruposActivosRefer)
+				responseGrupoActivo := CreateGruposActivosResponse(grupoActivo)
+				responseGruposActivos = append(responseGruposActivos, responseGrupoActivo)
+			}
 
-			/*
-				if err := findGrupoActivo(relacion.GruposActivosRefer, &grupoActivo); err != nil {
-					return c.Status(400).JSON(err.Error())
-				}*/
-
-			database.Database.Db.Find(&grupoActivo, "id = ?", relacion.GruposActivosRefer)
-			database.Database.Db.Find(&grupoAprobado, "id = ?", relacion.GruposAprobadosRefer)
-
-			//log.Print(relacion.GruposActivosRefer)
-
-			responseGrupoActivo := CreateGruposActivosResponse(grupoActivo)
-			responseGruposActivos = append(responseGruposActivos, responseGrupoActivo)
-
-			responseGrupoAprobado := CreateGruposConcluidosResponse(grupoAprobado)
-			responseGruposAprobados = append(responseGruposAprobados, responseGrupoAprobado)
-			//log.Print(responseGruposActivos)
+			if relacion.GruposAprobadosRefer != 0 {
+				var grupoConcluido models.GruposConcluidos
+				database.Database.Db.First(&grupoConcluido, relacion.GruposAprobadosRefer)
+				responseGrupoConcluido := CreateGruposConcluidosResponse(grupoConcluido)
+				responseGruposConcluidos = append(responseGruposConcluidos, responseGrupoConcluido)
+			}
 		}
-		// database.Database.Db.Find(&gruposActivos)
-		// database.Database.Db.Find(&gruposAprobados)
-		responseAlumno := CreateGetResponseAlumnos(alumno, responseGruposActivos, responseGruposAprobados)
+
+		responseAlumno := CreateGetResponseAlumnos(alumno, responseGruposActivos, responseGruposConcluidos)
 		responseAlumnos = append(responseAlumnos, responseAlumno)
-
 	}
-	return c.Status(200).JSON(responseAlumnos)
 
+	return c.Status(200).JSON(responseAlumnos)
 }
 
 func CreateAlumno(c *fiber.Ctx) error {

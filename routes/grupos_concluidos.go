@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"errors"
+	//"errors"
 
 	"github.com/Gerardo02/Back-Fiber/database"
 	"github.com/Gerardo02/Back-Fiber/models"
@@ -23,21 +23,22 @@ func CreateGruposConcluidosResponse(gruposConcluidosModel models.GruposConcluido
 	}
 }
 
+/*
 func findGrupoConcluido(id int, grupoConcluido *models.GruposConcluidos) error {
 
-	if id == 0 {
+		if id == 0 {
+			return nil
+		}
+
+		database.Database.Db.Find(&grupoConcluido, "id = ?", id)
+
+		if grupoConcluido.ID == 0 {
+			return errors.New("grupo concluido does not exist")
+		}
+
 		return nil
 	}
-
-	database.Database.Db.Find(&grupoConcluido, "id = ?", id)
-
-	if grupoConcluido.ID == 0 {
-		return errors.New("grupo concluido does not exist")
-	}
-
-	return nil
-}
-
+*/
 func CreateGrupoConcluido(c *fiber.Ctx) error {
 	var grupoConcluido models.GruposConcluidos
 
