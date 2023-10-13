@@ -63,13 +63,23 @@ func CreateEspecialidadResponse(especialidadModel models.Especialidades) Especia
 	}
 }
 
-func CreateGruposActivosResponse(gruposActivosModel models.GruposActivos, especialidad Especialidades) GruposActivos {
+func CreateGruposActivosResponse(gruposActivosModel models.GruposActivos, especialidad Especialidades, listaAsistencia []string) GruposActivos {
 	return GruposActivos{
 		ID:              gruposActivosModel.ID,
 		Nombre:          gruposActivosModel.Nombre,
 		CantidadAlumnos: gruposActivosModel.CantidadAlumnos,
 		Trimestre:       gruposActivosModel.Trimestre,
-		ListaAsistencia: gruposActivosModel.ListaAsistencia,
+		ListaAsistencia: listaAsistencia,
+		Especialidad:    especialidad,
+	}
+}
+
+func CreateGruposActivosAlumnosResponse(gruposActivosModel models.GruposActivos, especialidad Especialidades) GruposActivos {
+	return GruposActivos{
+		ID:              gruposActivosModel.ID,
+		Nombre:          gruposActivosModel.Nombre,
+		CantidadAlumnos: gruposActivosModel.CantidadAlumnos,
+		Trimestre:       gruposActivosModel.Trimestre,
 		Especialidad:    especialidad,
 	}
 }
@@ -87,13 +97,21 @@ func CreatePermisosResponse(permisosModel models.Permisos) Permisos {
 	return Permisos{Permiso: permisosModel.Permiso}
 }
 
-func CreateRelacionResponse(relacionModel models.RelacionAlumnoGrupo) RelacionAlumnoGrupo {
+func CreateRelacionAlumnoGrupoResponse(relacionModel models.RelacionAlumnoGrupo) RelacionAlumnoGrupo {
 	return RelacionAlumnoGrupo{
 		ID:                   relacionModel.ID,
 		AlumnoRefer:          relacionModel.AlumnoRefer,
 		GruposActivosRefer:   relacionModel.GruposActivosRefer,
 		GruposAprobadosRefer: relacionModel.GruposAprobadosRefer,
 		EspecialidadesRefer:  relacionModel.EspecialidadRefer,
+	}
+}
+
+func CreateRelacionGrupoListasResponse(relacionModel models.RelacionGrupoLista) RelacionGrupoLista {
+	return RelacionGrupoLista{
+		ID:                 relacionModel.ID,
+		ListaAsistencia:    relacionModel.ListaAsistencia,
+		GruposActivosRefer: relacionModel.GruposActivosRefer,
 	}
 }
 

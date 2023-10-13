@@ -69,7 +69,7 @@ func CreateGrupoActivo(c *fiber.Ctx) error {
 	database.Database.Db.Find(&especialidad)
 
 	responseEspecialidad := CreateEspecialidadResponse(especialidad)
-	responseGrupoActivo := CreateGruposActivosResponse(grupoActivo, responseEspecialidad)
+	responseGrupoActivo := CreateGruposActivosAlumnosResponse(grupoActivo, responseEspecialidad)
 	return c.Status(200).JSON(responseGrupoActivo)
 }
 
@@ -113,7 +113,20 @@ func CreateRelacionAlumnosGrupos(c *fiber.Ctx) error {
 
 	database.Database.Db.Create(&relacion)
 
-	relacionResponse := CreateRelacionResponse(relacion)
+	relacionResponse := CreateRelacionAlumnoGrupoResponse(relacion)
+	return c.Status(200).JSON(relacionResponse)
+}
+
+func CreateRelacionGrupoListas(c *fiber.Ctx) error {
+	var relacion models.RelacionGrupoLista
+
+	if err := c.BodyParser(&relacion); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	database.Database.Db.Create(&relacion)
+
+	relacionResponse := CreateRelacionGrupoListasResponse(relacion)
 	return c.Status(200).JSON(relacionResponse)
 }
 

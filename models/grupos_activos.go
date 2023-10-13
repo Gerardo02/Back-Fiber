@@ -8,7 +8,6 @@ type GruposActivos struct {
 	Nombre            string         `json:"nombre"`
 	CantidadAlumnos   int            `json:"cantidad_de_alumnos"`
 	Trimestre         int            `json:"trimestre"`
-	ListaAsistencia   string         `json:"lista_asistencia"` //arreglo
 	EspecialidadRefer int            `json:"especialidad_id"`
 	Especialidad      Especialidades `gorm:"foreignKey:EspecialidadRefer"`
 }

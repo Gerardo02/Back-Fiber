@@ -19,7 +19,7 @@ func ConnectDb() {
 	db, err := gorm.Open(sqlite.Open("api.db"), &gorm.Config{})
 
 	if err != nil {
-		log.Fatal("Failed to connecto to the database! \n", err.Error())
+		log.Fatal("Failed to connect to the database! \n", err.Error())
 	}
 
 	log.Println("Connected to the database successfully")
@@ -36,6 +36,7 @@ func ConnectDb() {
 		&models.Permisos{},
 		&models.Usuarios{},
 		&models.RelacionAlumnoGrupo{},
+		&models.RelacionGrupoLista{},
 	)
 
 	Database = DbInstance{Db: db}

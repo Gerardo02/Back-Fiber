@@ -40,7 +40,7 @@ type GruposActivos struct {
 	Nombre          string         `json:"nombre"`
 	CantidadAlumnos int            `json:"cantidad_de_alumnos"`
 	Trimestre       int            `json:"trimestre"`
-	ListaAsistencia string         `json:"lista_asistencia"`
+	ListaAsistencia []string       `json:"lista_asistencia"`
 	Especialidad    Especialidades `json:"especialidad"`
 }
 
@@ -68,4 +68,10 @@ type Usuarios struct {
 	Usuario  string   `json:"usuario"`
 	Password string   `json:"password"`
 	Permisos Permisos `json:"permisos"`
+}
+
+type RelacionGrupoLista struct {
+	ID                 uint   `json:"id" gorm:"primaryKey"`
+	ListaAsistencia    string `json:"lista_asistencia"`
+	GruposActivosRefer int    `json:"grupo_id"`
 }

@@ -21,12 +21,16 @@ func setupRoutes(app *fiber.App) {
 	app.Get("/api/alumnos", routes.GetAllAlumnos)
 
 	// grupos
+	app.Get("/api/grupos", routes.GetAllGruposActivos)
 	app.Post("/api/grupos", routes.CreateGrupoActivo)
 	app.Post("/api/grupos/aprobados", routes.CreateGrupoConcluido)
 
 	// relacion alumnos - grupos
 	app.Get("/api/alumnos/grupos", routes.GetAllRelacionAlumnosGrupos)
 	app.Post("/api/alumnos/grupos", routes.CreateRelacionAlumnosGrupos)
+
+	// relacion grupos - listas
+	app.Post("/api/grupos/listas", routes.CreateRelacionGrupoListas)
 
 	// administracion
 	app.Post("/api/administracion", routes.CreateCuentaAdmin)
@@ -36,7 +40,6 @@ func setupRoutes(app *fiber.App) {
 	app.Post("/api/usuarios", routes.CreateUsuarios)
 
 	// especialidad
-
 	app.Post("/api/especialidad", routes.CreateEspecialidad)
 
 }
