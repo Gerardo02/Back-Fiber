@@ -1,0 +1,45 @@
+[
+    {
+        "nombre": "Pedro",
+        "apellidos": "Suarez",
+        "matricula": "392010",
+        "fecha_nacimiento": "16/05/2002",
+        "edad": 20,
+        "nombre_tutor": "Juan",
+        "celular_tutor": "6443378908",
+        "curp": "DFG54GER4T5",
+        "localidad": "Cajeme",
+        "codigo_postal": "34543",
+        "direccion": "Villa Bonita",
+        "telefono_fijo": "6448874321",
+        "celular": "6449980921",
+        "correo": "pedro.suarez@hotmail.com"
+    },
+    {
+        "adeudo": true,
+        "estado": 0,
+        "alumno_id": 2
+    },
+    {
+        "alumno_id": 2,
+        "grupo_activo_id": 3,
+        "grupo_aprobado_id": 0,
+        "especialidad_id": 2
+    },
+    {
+        "nombre": "4B",
+        "cantidad_de_alumnos": 10,
+        "trimestre": 2,
+        "lista_asistencia": "Listita",
+        "especialidad_id": 2
+    },
+    {
+        "nombre": "3A",
+        "cantidad_de_alumnos": 40,
+        "especialidad_id": 2
+    },
+    {
+        "materia": "Delineado de barba",
+        "especialidad": "Barberia y cortes"
+    }
+]

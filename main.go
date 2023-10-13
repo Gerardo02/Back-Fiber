@@ -35,6 +35,10 @@ func setupRoutes(app *fiber.App) {
 	app.Post("/api/permisos", routes.CreatePermiso)
 	app.Post("/api/usuarios", routes.CreateUsuarios)
 
+	// especialidad
+
+	app.Post("/api/especialidad", routes.CreateEspecialidad)
+
 }
 
 func main() {
