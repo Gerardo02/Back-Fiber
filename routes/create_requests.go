@@ -29,12 +29,20 @@ func CreateCuentaAdmin(c *fiber.Ctx) error {
 
 func CreateAlumno(c *fiber.Ctx) error {
 	var alumno models.Alumnos
+	var docs models.Documentos
 
 	if err := c.BodyParser(&alumno); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 
 	database.Database.Db.Create(&alumno)
+
+	docs.AlumnoRefer = alumno.ID
+	docs.Nombre = alumno.Nombre
+	docs.Apellidos = alumno.Apellidos
+	docs.Matricula = alumno.Matricula
+
+	database.Database.Db.Create(&docs)
 
 	responseAlumno := CreateAlumnosResponse(alumno)
 
