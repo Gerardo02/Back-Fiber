@@ -26,3 +26,13 @@ func findAlumno(id int, alumno *models.Alumnos) error {
 
 	return nil
 }
+
+func findDocuments(id int, documents *models.Documentos) error {
+	database.Database.Db.Find(&documents, "alumno_refer = ?", id)
+
+	if documents.AlumnoRefer == 0 {
+		return errors.New("archivadero de documentos del alumno no existe")
+	}
+
+	return nil
+}

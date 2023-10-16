@@ -123,3 +123,15 @@ func CreateUsuariosResponse(usuariosModel models.Usuarios, permiso Permisos) Usu
 		Permisos: permiso,
 	}
 }
+
+func CreateDocumentosResponse(documentsModel models.Documentos) Documentos {
+	return Documentos{
+		ID:                   documentsModel.ID,
+		AlumnoRefer:          documentsModel.AlumnoRefer,
+		ActaNacimiento:       documentsModel.ActaNacimiento,
+		Curp:                 documentsModel.Curp,
+		ComprobanteDomicilio: documentsModel.ComprobanteDomicilio,
+		MayorQuince:          documentsModel.MayorQuince,
+		Fotos:                documentsModel.Fotos,
+	}
+}

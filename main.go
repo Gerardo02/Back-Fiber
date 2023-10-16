@@ -42,6 +42,9 @@ func setupRoutes(app *fiber.App) {
 	// especialidad
 	app.Post("/api/especialidad", routes.CreateEspecialidad)
 
+	// documentos entregados
+	app.Put("api/documentos/:id", routes.UpdateDocuments)
+
 }
 
 func main() {

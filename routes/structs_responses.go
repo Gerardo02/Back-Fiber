@@ -75,3 +75,13 @@ type RelacionGrupoLista struct {
 	ListaAsistencia    string `json:"lista_asistencia"`
 	GruposActivosRefer int    `json:"grupo_id"`
 }
+
+type Documentos struct {
+	ID                   uint `json:"id" gorm:"primaryKey"`
+	AlumnoRefer          uint `json:"alumno_id"`
+	ActaNacimiento       bool `json:"acta_de_nacimiento"`
+	Curp                 bool `json:"curp"`
+	ComprobanteDomicilio bool `json:"comprobante_de_domicilio"`
+	MayorQuince          bool `json:"mayor_quince"`
+	Fotos                bool `json:"fotos"`
+}
