@@ -2,13 +2,11 @@ package routes
 
 import "github.com/Gerardo02/Back-Fiber/models"
 
-func CreateResponseAdmin(adminModel models.Administraciones, alumnoNombre string, alumnoMatricula string) Administraciones {
+func CreateAdminResponse(adminModel models.Administraciones) Administraciones {
 	return Administraciones{
-		ID:              adminModel.ID,
-		Adeudo:          adminModel.Adeudo,
-		Estado:          adminModel.Estado,
-		AlumnoNombre:    alumnoNombre,
-		AlumnoMatricula: alumnoMatricula,
+		ID:     adminModel.ID,
+		Adeudo: adminModel.Adeudo,
+		Estado: adminModel.Estado,
 	}
 }
 

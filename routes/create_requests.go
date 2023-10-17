@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+/*
 func CreateCuentaAdmin(c *fiber.Ctx) error {
 	var admin models.Administraciones
 
@@ -25,11 +26,12 @@ func CreateCuentaAdmin(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(responseAdmin)
 
-}
+}*/
 
 func CreateAlumno(c *fiber.Ctx) error {
 	var alumno models.Alumnos
 	var docs models.Documentos
+	var admin models.Administraciones
 
 	if err := c.BodyParser(&alumno); err != nil {
 		return c.Status(400).JSON(err.Error())
@@ -38,10 +40,9 @@ func CreateAlumno(c *fiber.Ctx) error {
 	database.Database.Db.Create(&alumno)
 
 	docs.AlumnoRefer = alumno.ID
-	docs.Nombre = alumno.Nombre
-	docs.Apellidos = alumno.Apellidos
-	docs.Matricula = alumno.Matricula
+	admin.AlumnoRefer = alumno.ID
 
+	database.Database.Db.Create(&admin)
 	database.Database.Db.Create(&docs)
 
 	responseAlumno := CreateAlumnosResponse(alumno)

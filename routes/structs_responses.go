@@ -1,20 +1,18 @@
 package routes
 
 type Administraciones struct {
-	ID              uint   `json:"id" gorm:"primaryKey"`
-	Adeudo          bool   `json:"adeudo"`
-	Estado          int    `json:"estado"`
-	AlumnoNombre    string `json:"alumno_nombre"`
-	AlumnoMatricula string `json:"alumno_matricula"`
+	ID     int  `json:"id" gorm:"primaryKey"`
+	Adeudo bool `json:"adeudo"`
+	Estado int  `json:"estado"`
 }
 
 type Alumnos struct {
-	ID              uint               `json:"id" gorm:"primaryKey"`
+	ID              int                `json:"id" gorm:"primaryKey"`
 	Nombre          string             `json:"nombre"`
 	Apellidos       string             `json:"apellidos"`
 	Matricula       string             `json:"matricula"`
 	FechaNacimiento string             `json:"fecha_nacimiento"`
-	Edad            uint               `json:"edad"`
+	Edad            int                `json:"edad"`
 	NombreTutor     string             `json:"nombre_tutor"`
 	CelularTutor    string             `json:"celular_tutor"`
 	Curp            string             `json:"curp"`
@@ -30,13 +28,13 @@ type Alumnos struct {
 }
 
 type Especialidades struct {
-	ID           uint   `json:"id" gorm:"primaryKey"`
+	ID           int    `json:"id" gorm:"primaryKey"`
 	Materia      string `json:"materia"`
 	Especialidad string `json:"especialidad"`
 }
 
 type GruposActivos struct {
-	ID              uint           `json:"id" gorm:"primaryKey"`
+	ID              int            `json:"id" gorm:"primaryKey"`
 	Nombre          string         `json:"nombre"`
 	CantidadAlumnos int            `json:"cantidad_de_alumnos"`
 	Trimestre       int            `json:"trimestre"`
@@ -45,7 +43,7 @@ type GruposActivos struct {
 }
 
 type GruposConcluidos struct {
-	ID              uint           `json:"id" gorm:"primaryKey"`
+	ID              int            `json:"id" gorm:"primaryKey"`
 	Nombre          string         `json:"nombre"`
 	CantidadAlumnos int            `json:"cantidad_de_alumnos"`
 	Especialidad    Especialidades `json:"especialidad"`
@@ -56,29 +54,29 @@ type Permisos struct {
 }
 
 type RelacionAlumnoGrupo struct {
-	ID                   uint `json:"id"`
-	AlumnoRefer          int  `json:"alumno_id"`
-	GruposActivosRefer   int  `json:"grupo_activo_id"`
-	GruposAprobadosRefer int  `json:"grupo_aprobado_id"`
-	EspecialidadesRefer  int  `json:"especialidad_id"`
+	ID                   int `json:"id"`
+	AlumnoRefer          int `json:"alumno_id"`
+	GruposActivosRefer   int `json:"grupo_activo_id"`
+	GruposAprobadosRefer int `json:"grupo_aprobado_id"`
+	EspecialidadesRefer  int `json:"especialidad_id"`
 }
 
 type Usuarios struct {
-	ID       uint     `json:"id" gorm:"primaryKey"`
+	ID       int      `json:"id" gorm:"primaryKey"`
 	Usuario  string   `json:"usuario"`
 	Password string   `json:"password"`
 	Permisos Permisos `json:"permisos"`
 }
 
 type RelacionGrupoLista struct {
-	ID                 uint   `json:"id" gorm:"primaryKey"`
+	ID                 int    `json:"id" gorm:"primaryKey"`
 	ListaAsistencia    string `json:"lista_asistencia"`
 	GruposActivosRefer int    `json:"grupo_id"`
 }
 
 type Documentos struct {
-	ID                   uint `json:"id" gorm:"primaryKey"`
-	AlumnoRefer          uint `json:"alumno_id"`
+	ID                   int  `json:"id" gorm:"primaryKey"`
+	AlumnoRefer          int  `json:"alumno_id"`
 	ActaNacimiento       bool `json:"acta_de_nacimiento"`
 	Curp                 bool `json:"curp"`
 	ComprobanteDomicilio bool `json:"comprobante_de_domicilio"`

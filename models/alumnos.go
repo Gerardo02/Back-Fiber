@@ -4,12 +4,12 @@ import "gorm.io/gorm"
 
 type Alumnos struct {
 	gorm.Model
-	ID              uint   `json:"id" gorm:"primaryKey"`
+	ID              int    `json:"id" gorm:"primaryKey"`
 	Nombre          string `json:"nombre"`
 	Apellidos       string `json:"apellidos"`
 	Matricula       string `json:"matricula"`
 	FechaNacimiento string `json:"fecha_nacimiento"`
-	Edad            uint   `json:"edad"`
+	Edad            int    `json:"edad"`
 	NombreTutor     string `json:"nombre_tutor"`
 	CelularTutor    string `json:"celular_tutor"`
 	Curp            string `json:"curp"`

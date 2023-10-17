@@ -36,3 +36,13 @@ func findDocuments(id int, documents *models.Documentos) error {
 
 	return nil
 }
+
+func findAdmin(id int, admin *models.Administraciones) error {
+	database.Database.Db.Find(&admin, "alumno_refer = ?", id)
+
+	if admin.AlumnoRefer == 0 {
+		return errors.New("alumno does not exist")
+	}
+
+	return nil
+}
