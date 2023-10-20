@@ -14,16 +14,18 @@ func helloWorld(c *fiber.Ctx) error {
 	return c.SendString("welcome to the jungle")
 }
 
-func setupRoutes(app *fiber.App) {
+func setupRoutes(app *fiber.App, dotenv string) {
 	app.Get("/api", helloWorld)
 
 	app.Post("/login", utils.Login)
 
 	app.Use(jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: []byte("SECRET_KEY")},
+		SigningKey: jwtware.SigningKey{Key: []byte(dotenv)},
 	}))
 
-	app.Get("/restricted", utils.Restricted)
+	app.Get("/restricted", utils.Restricted, func(c *fiber.Ctx) error {
+		return c.SendString("asdasd")
+	})
 
 	// alumnos
 	app.Post("/api/alumnos", routes.CreateAlumno)
@@ -61,7 +63,8 @@ func main() {
 	database.ConnectDb()
 	app := fiber.New()
 
-	setupRoutes(app)
+	dotenv := utils.GoDotEnvVariable("SECRET_KEY")
+	setupRoutes(app, dotenv)
 
 	log.Fatal(app.Listen(":3030"))
 }

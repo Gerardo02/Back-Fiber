@@ -1,13 +1,31 @@
 package utils
 
 import (
+	"log"
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 )
 
+func GoDotEnvVariable(key string) string {
+
+	// load .env file
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	return os.Getenv(key)
+}
+
 func Login(c *fiber.Ctx) error {
+	dotenv := GoDotEnvVariable("SECRET_KEY")
+
+	//authPost := fiber.New().Post("/asdasd")
 
 	payload := struct {
 		User     string `json:"user"`
@@ -34,7 +52,7 @@ func Login(c *fiber.Ctx) error {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Generate encoded token and send it as response.
-	t, err := token.SignedString([]byte("SECRET_KEY"))
+	t, err := token.SignedString([]byte(dotenv))
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -47,4 +65,5 @@ func Restricted(c *fiber.Ctx) error {
 	claims := user.Claims.(jwt.MapClaims)
 	name := claims["name"].(string)
 	return c.SendString("Welcome " + name)
+
 }
