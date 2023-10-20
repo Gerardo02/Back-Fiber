@@ -4,8 +4,9 @@ import (
 	"log"
 
 	"github.com/Gerardo02/Back-Fiber/database"
-	"github.com/Gerardo02/Back-Fiber/routes"
-
+	"github.com/Gerardo02/Back-Fiber/src/routes"
+	"github.com/Gerardo02/Back-Fiber/src/utils"
+	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -15,6 +16,14 @@ func helloWorld(c *fiber.Ctx) error {
 
 func setupRoutes(app *fiber.App) {
 	app.Get("/api", helloWorld)
+
+	app.Post("/login", utils.Login)
+
+	app.Use(jwtware.New(jwtware.Config{
+		SigningKey: jwtware.SigningKey{Key: []byte("SECRET_KEY")},
+	}))
+
+	app.Get("/restricted", utils.Restricted)
 
 	// alumnos
 	app.Post("/api/alumnos", routes.CreateAlumno)
