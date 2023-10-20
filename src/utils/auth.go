@@ -5,15 +5,21 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
-	//"github.com/golang-jwt/jwt"
 )
 
 func Login(c *fiber.Ctx) error {
-	user := c.FormValue("user")
-	pass := c.FormValue("pass")
+
+	payload := struct {
+		User     string `json:"user"`
+		Password string `json:"password"`
+	}{}
+
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
 
 	// Throws Unauthorized error
-	if user != "john" || pass != "doe" {
+	if payload.User != "john" || payload.Password != "doe" {
 		return c.SendStatus(fiber.StatusUnauthorized)
 	}
 
