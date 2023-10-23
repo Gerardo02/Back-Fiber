@@ -36,6 +36,7 @@ type Especialidades struct {
 type GruposActivos struct {
 	ID              int            `json:"id" gorm:"primaryKey"`
 	Nombre          string         `json:"nombre"`
+	NombreMaestro   string         `json:"nombre_maestro"`
 	CantidadAlumnos int            `json:"cantidad_de_alumnos"`
 	Trimestre       int            `json:"trimestre"`
 	ListaAsistencia []string       `json:"lista_asistencia"`

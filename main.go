@@ -23,7 +23,7 @@ func setupRoutes(app *fiber.App, secretKey string) {
 	})
 
 	// alumnos
-	app.Post("/api/alumnos", routes.CreateAlumno)
+	app.Post("/api/alumnos", routes.CreateEspecialidadRelacionMiddleware, routes.CreateAlumno)
 	app.Get("/api/alumnos", routes.GetAllAlumnos)
 	app.Put("/api/alumnos/:id", routes.UpdateAlumnos)
 	app.Delete("/api/alumnos/:id", routes.DeleteAlumno)

@@ -139,6 +139,47 @@ func CreateRelacionGrupoListas(c *fiber.Ctx) error {
 	return c.Status(200).JSON(relacionResponse)
 }
 
+func CreateEspecialidadRelacionMiddleware(c *fiber.Ctx) error {
+	var alumno models.Alumnos
+
+	DummyAlumno := struct {
+		Especialidad []string `json:"especialidad"`
+	}{}
+
+	if err := c.BodyParser(&DummyAlumno); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	length := len(DummyAlumno.Especialidad)
+
+	if length <= 0 {
+		return c.Next()
+	}
+
+	database.Database.Db.Last(&alumno)
+
+	alumnoID := alumno.ID + 1
+
+	for i := 0; i < length; i++ {
+
+		var especialidades []models.Especialidades
+		database.Database.Db.Where("materia = ?", DummyAlumno.Especialidad[i]).Find(&especialidades)
+
+		for _, especialidad := range especialidades {
+			relacion := models.RelacionAlumnoGrupo{
+				AlumnoRefer:          alumnoID,
+				GruposActivosRefer:   0,
+				GruposAprobadosRefer: 0,
+				EspecialidadRefer:    especialidad.ID,
+			}
+
+			database.Database.Db.Create(&relacion)
+		}
+	}
+
+	return c.Next()
+}
+
 func CreateUsuarios(c *fiber.Ctx) error {
 	var usuario models.Usuarios
 
