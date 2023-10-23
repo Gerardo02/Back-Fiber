@@ -107,3 +107,18 @@ func GetAllRelacionAlumnosGrupos(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(responseRelaciones)
 }
+
+func GetAllEspecialidades(c *fiber.Ctx) error {
+	especialidades := []models.Especialidades{}
+
+	database.Database.Db.Find(&especialidades)
+
+	responseEspecialidades := []Especialidades{}
+
+	for _, especialidad := range especialidades {
+		responseEspecialidad := CreateEspecialidadResponse(especialidad)
+		responseEspecialidades = append(responseEspecialidades, responseEspecialidad)
+	}
+
+	return c.Status(200).JSON(responseEspecialidades)
+}

@@ -1,3 +1,2 @@
 -- SQLite
-DROP TABLE administraciones;
-DROP TABLE documentos;
+DROP TABLE especialidades;

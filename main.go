@@ -6,22 +6,17 @@ import (
 	"github.com/Gerardo02/Back-Fiber/database"
 	"github.com/Gerardo02/Back-Fiber/src/routes"
 	"github.com/Gerardo02/Back-Fiber/src/utils"
-	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
-func helloWorld(c *fiber.Ctx) error {
-	return c.SendString("welcome to the jungle")
-}
+func setupRoutes(app *fiber.App, secretKey string) {
 
-func setupRoutes(app *fiber.App, dotenv string) {
-	app.Get("/api", helloWorld)
+	app.Post("/login", utils.GenerateToken)
 
-	app.Post("/login", utils.Login)
-
-	app.Use(jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: []byte(dotenv)},
-	}))
+	// app.Use(jwtware.New(jwtware.Config{
+	// 	SigningKey: jwtware.SigningKey{Key: []byte(secretKey)},
+	// }))
 
 	app.Get("/restricted", utils.Restricted, func(c *fiber.Ctx) error {
 		return c.SendString("asdasd")
@@ -31,10 +26,14 @@ func setupRoutes(app *fiber.App, dotenv string) {
 	app.Post("/api/alumnos", routes.CreateAlumno)
 	app.Get("/api/alumnos", routes.GetAllAlumnos)
 	app.Put("/api/alumnos/:id", routes.UpdateAlumnos)
+	app.Delete("/api/alumnos/:id", routes.DeleteAlumno)
 
 	// grupos
 	app.Get("/api/grupos", routes.GetAllGruposActivos)
 	app.Post("/api/grupos", routes.CreateGrupoActivo)
+	app.Delete("/api/grupos", routes.DeleteAllGruposActivos)
+	app.Delete("/api/grupos/purge", routes.DropSoftDeletesGruposActivos)
+	app.Delete("/api/grupos/:id", routes.DeleteSingleGroup)
 	app.Post("/api/grupos/aprobados", routes.CreateGrupoConcluido)
 
 	// relacion alumnos - grupos
@@ -53,6 +52,7 @@ func setupRoutes(app *fiber.App, dotenv string) {
 
 	// especialidad
 	app.Post("/api/especialidad", routes.CreateEspecialidad)
+	app.Get("/api/especialidad", routes.GetAllEspecialidades)
 
 	// documentos entregados
 	app.Put("api/documentos/:id", routes.UpdateDocuments)
@@ -63,8 +63,12 @@ func main() {
 	database.ConnectDb()
 	app := fiber.New()
 
-	dotenv := utils.GoDotEnvVariable("SECRET_KEY")
-	setupRoutes(app, dotenv)
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost:5173",
+	}))
+
+	secretKey := utils.GoDotEnvVariable("SECRET_KEY")
+	setupRoutes(app, secretKey)
 
 	log.Fatal(app.Listen(":3030"))
 }

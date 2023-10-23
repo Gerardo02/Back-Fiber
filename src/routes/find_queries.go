@@ -46,3 +46,23 @@ func findAdmin(id int, admin *models.Administraciones) error {
 
 	return nil
 }
+
+func findGrupoActivo(id int, grupo *models.GruposActivos) error {
+	database.Database.Db.Find(&grupo, "id = ?", id)
+
+	if grupo.ID == 0 {
+		return errors.New("grupo does not exist")
+	}
+
+	return nil
+}
+
+// func findGrupoActivoRefer(id int, grupo *models.RelacionAlumnoGrupo) error {
+// 	database.Database.Db.Find(&grupo, "grupos_activos_refer = ?", id)
+
+// 	if grupo.GruposActivosRefer == 0 {
+// 		return errors.New("grupo does not exist")
+// 	}
+
+// 	return nil
+// }

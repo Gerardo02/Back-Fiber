@@ -22,10 +22,8 @@ func GoDotEnvVariable(key string) string {
 	return os.Getenv(key)
 }
 
-func Login(c *fiber.Ctx) error {
+func GenerateToken(c *fiber.Ctx) error {
 	dotenv := GoDotEnvVariable("SECRET_KEY")
-
-	//authPost := fiber.New().Post("/asdasd")
 
 	payload := struct {
 		User     string `json:"user"`
