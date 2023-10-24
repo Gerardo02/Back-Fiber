@@ -1,9 +1,12 @@
 package routes
 
 type Administraciones struct {
-	ID     int  `json:"id" gorm:"primaryKey"`
-	Adeudo bool `json:"adeudo"`
-	Estado int  `json:"estado"`
+	ID        int    `json:"id" gorm:"primaryKey"`
+	Nombre    string `json:"nombre"`
+	Apellido  string `json:"apellido"`
+	Matricula string `json:"matricula"`
+	Adeudo    bool   `json:"adeudo"`
+	Estado    int    `json:"estado"`
 }
 
 type Alumnos struct {

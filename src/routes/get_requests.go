@@ -122,3 +122,23 @@ func GetAllEspecialidades(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(responseEspecialidades)
 }
+
+func GetAdministraciones(c *fiber.Ctx) error {
+	administraciones := []models.Administraciones{}
+
+	database.Database.Db.Find(&administraciones)
+
+	responseAdministraciones := []Administraciones{}
+
+	for _, administracion := range administraciones {
+		var alumno models.Alumnos
+		if err := findAlumno(administracion.AlumnoRefer, &alumno); err != nil {
+			return c.Status(400).JSON(err.Error())
+		}
+
+		responseAdministracion := CreateGetAdminResponse(administracion, alumno.Nombre, alumno.Apellidos, alumno.Matricula)
+		responseAdministraciones = append(responseAdministraciones, responseAdministracion)
+	}
+
+	return c.Status(200).JSON(responseAdministraciones)
+}

@@ -2,6 +2,17 @@ package routes
 
 import "github.com/Gerardo02/Back-Fiber/models"
 
+func CreateGetAdminResponse(adminModel models.Administraciones, nombre string, apellido string, matricula string) Administraciones {
+	return Administraciones{
+		ID:        adminModel.ID,
+		Nombre:    nombre,
+		Apellido:  apellido,
+		Matricula: matricula,
+		Adeudo:    adminModel.Adeudo,
+		Estado:    adminModel.Estado,
+	}
+}
+
 func CreateAdminResponse(adminModel models.Administraciones) Administraciones {
 	return Administraciones{
 		ID:     adminModel.ID,

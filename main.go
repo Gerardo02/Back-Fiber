@@ -45,6 +45,7 @@ func setupRoutes(app *fiber.App, secretKey string) {
 
 	// administracion
 	app.Put("/api/administracion/:id", routes.UpdateAdmin)
+	app.Get("/api/administracion", routes.GetAdministraciones)
 
 	// permisos
 	app.Post("/api/permisos", routes.CreatePermiso)
