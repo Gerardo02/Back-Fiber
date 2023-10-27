@@ -104,6 +104,7 @@ func UpdateAlumnos(c *fiber.Ctx) error {
 
 func UpdateAdmin(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
+	var adeudo, estado string
 	var admin models.Administraciones
 
 	if err != nil {
@@ -128,9 +129,23 @@ func UpdateAdmin(c *fiber.Ctx) error {
 	admin.Adeudo = UpdatedData.Adeudo
 	admin.Estado = UpdatedData.Estado
 
+	if Pendiente == admin.Estado {
+		estado = "Pendiente"
+	} else if EnProceso == admin.Estado {
+		estado = "En proceso"
+	} else if Listo == admin.Estado {
+		estado = "Listo"
+	}
+
+	if admin.Adeudo {
+		adeudo = "Debe"
+	} else {
+		adeudo = "Al corriente"
+	}
+
 	database.Database.Db.Save(&admin)
 
-	responseAdmin := CreateAdminResponse(admin)
+	responseAdmin := CreateAdminResponse(admin, adeudo, estado)
 
 	return c.Status(200).JSON(responseAdmin)
 }

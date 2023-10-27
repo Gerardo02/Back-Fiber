@@ -56,7 +56,8 @@ func setupRoutes(app *fiber.App, secretKey string) {
 	app.Get("/api/especialidad", routes.GetAllEspecialidades)
 
 	// documentos entregados
-	app.Put("api/documentos/:id", routes.UpdateDocuments)
+	app.Get("/api/documentos", routes.GetDocumentosEntregados)
+	app.Put("/api/documentos/:id", routes.UpdateDocuments)
 
 }
 

@@ -132,13 +132,50 @@ func GetAdministraciones(c *fiber.Ctx) error {
 
 	for _, administracion := range administraciones {
 		var alumno models.Alumnos
+		var adeudo, estado string
+
 		if err := findAlumno(administracion.AlumnoRefer, &alumno); err != nil {
 			return c.Status(400).JSON(err.Error())
 		}
 
-		responseAdministracion := CreateGetAdminResponse(administracion, alumno.Nombre, alumno.Apellidos, alumno.Matricula)
+		if Pendiente == administracion.Estado {
+			estado = "Pendiente"
+		} else if EnProceso == administracion.Estado {
+			estado = "En proceso"
+		} else if Listo == administracion.Estado {
+			estado = "Listo"
+		}
+
+		if administracion.Adeudo {
+			adeudo = "Debe"
+		} else {
+			adeudo = "Al corriente"
+		}
+
+		responseAdministracion := CreateGetAdminResponse(administracion, alumno.Nombre, alumno.Apellidos, alumno.Matricula, adeudo, estado)
 		responseAdministraciones = append(responseAdministraciones, responseAdministracion)
 	}
 
 	return c.Status(200).JSON(responseAdministraciones)
+}
+
+func GetDocumentosEntregados(c *fiber.Ctx) error {
+	documentos := []models.Documentos{}
+
+	database.Database.Db.Find(&documentos)
+
+	responseDocumentos := []Documentos{}
+
+	for _, documento := range documentos {
+		var alumno models.Alumnos
+
+		if err := findAlumno(documento.AlumnoRefer, &alumno); err != nil {
+			return c.Status(400).JSON(err.Error())
+		}
+
+		responseDocumento := CreateGetDocumentosResponse(documento, alumno.Nombre, alumno.Apellidos, alumno.Matricula)
+		responseDocumentos = append(responseDocumentos, responseDocumento)
+	}
+
+	return c.Status(200).JSON(responseDocumentos)
 }

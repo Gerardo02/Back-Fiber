@@ -5,8 +5,8 @@ type Administraciones struct {
 	Nombre    string `json:"nombre"`
 	Apellido  string `json:"apellido"`
 	Matricula string `json:"matricula"`
-	Adeudo    bool   `json:"adeudo"`
-	Estado    int    `json:"estado"`
+	Adeudo    string `json:"adeudo"`
+	Estado    string `json:"estado"`
 }
 
 type Alumnos struct {
@@ -79,11 +79,20 @@ type RelacionGrupoLista struct {
 }
 
 type Documentos struct {
-	ID                   int  `json:"id" gorm:"primaryKey"`
-	AlumnoRefer          int  `json:"alumno_id"`
-	ActaNacimiento       bool `json:"acta_de_nacimiento"`
-	Curp                 bool `json:"curp"`
-	ComprobanteDomicilio bool `json:"comprobante_de_domicilio"`
-	MayorQuince          bool `json:"mayor_quince"`
-	Fotos                bool `json:"fotos"`
+	ID                   int    `json:"id" gorm:"primaryKey"`
+	AlumnoRefer          int    `json:"alumno_id"`
+	Nombre               string `json:"nombre"`
+	Apellidos            string `json:"apellido"`
+	Matricula            string `json:"matricula"`
+	ActaNacimiento       bool   `json:"acta_de_nacimiento"`
+	Curp                 bool   `json:"curp"`
+	ComprobanteDomicilio bool   `json:"comprobante_de_domicilio"`
+	MayorQuince          bool   `json:"mayor_quince"`
+	Fotos                bool   `json:"fotos"`
 }
+
+const (
+	Pendiente = iota
+	EnProceso
+	Listo
+)

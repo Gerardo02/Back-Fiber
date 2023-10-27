@@ -2,22 +2,22 @@ package routes
 
 import "github.com/Gerardo02/Back-Fiber/models"
 
-func CreateGetAdminResponse(adminModel models.Administraciones, nombre string, apellido string, matricula string) Administraciones {
+func CreateGetAdminResponse(adminModel models.Administraciones, nombre string, apellido string, matricula string, adeudo string, estado string) Administraciones {
 	return Administraciones{
 		ID:        adminModel.ID,
 		Nombre:    nombre,
 		Apellido:  apellido,
 		Matricula: matricula,
-		Adeudo:    adminModel.Adeudo,
-		Estado:    adminModel.Estado,
+		Adeudo:    adeudo,
+		Estado:    estado,
 	}
 }
 
-func CreateAdminResponse(adminModel models.Administraciones) Administraciones {
+func CreateAdminResponse(adminModel models.Administraciones, adeudo string, estado string) Administraciones {
 	return Administraciones{
 		ID:     adminModel.ID,
-		Adeudo: adminModel.Adeudo,
-		Estado: adminModel.Estado,
+		Adeudo: adeudo,
+		Estado: estado,
 	}
 }
 
@@ -130,6 +130,21 @@ func CreateUsuariosResponse(usuariosModel models.Usuarios, permiso Permisos) Usu
 		Usuario:  usuariosModel.Usuario,
 		Password: usuariosModel.Password,
 		Permisos: permiso,
+	}
+}
+
+func CreateGetDocumentosResponse(documentsModel models.Documentos, nombre string, apellidos string, matricula string) Documentos {
+	return Documentos{
+		ID:                   documentsModel.ID,
+		AlumnoRefer:          documentsModel.AlumnoRefer,
+		Nombre:               nombre,
+		Apellidos:            apellidos,
+		Matricula:            matricula,
+		ActaNacimiento:       documentsModel.ActaNacimiento,
+		Curp:                 documentsModel.Curp,
+		ComprobanteDomicilio: documentsModel.ComprobanteDomicilio,
+		MayorQuince:          documentsModel.MayorQuince,
+		Fotos:                documentsModel.Fotos,
 	}
 }
 
