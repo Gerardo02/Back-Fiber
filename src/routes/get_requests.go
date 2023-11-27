@@ -179,3 +179,24 @@ func GetDocumentosEntregados(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(responseDocumentos)
 }
+
+func GetUsuarios(c *fiber.Ctx) error {
+	usuarios := []models.Usuarios{}
+
+	database.Database.Db.Find(&usuarios)
+
+	responseUsuarios := []Usuarios{}
+
+	for _, usuario := range usuarios {
+		var permiso models.Permisos
+
+		if err := findPermisos(usuario.PermisosRefer, &permiso); err != nil {
+			return c.Status(400).JSON(err.Error())
+		}
+		responsePermiso := CreatePermisosResponse(permiso)
+		responseUsuario := CreateUsuariosResponse(usuario, responsePermiso)
+		responseUsuarios = append(responseUsuarios, responseUsuario)
+	}
+
+	return c.Status(200).JSON(responseUsuarios)
+}

@@ -103,7 +103,10 @@ func CreateGruposConcluidosResponse(gruposConcluidosModel models.GruposConcluido
 }
 
 func CreatePermisosResponse(permisosModel models.Permisos) Permisos {
-	return Permisos{Permiso: permisosModel.Permiso}
+	return Permisos{
+		ID:      permisosModel.ID,
+		Permiso: permisosModel.Permiso,
+	}
 }
 
 func CreateRelacionAlumnoGrupoResponse(relacionModel models.RelacionAlumnoGrupo) RelacionAlumnoGrupo {

@@ -48,6 +48,7 @@ func setupRoutes(app *fiber.App, secretKey string) {
 	app.Get("/api/administracion", routes.GetAdministraciones)
 
 	// permisos
+	app.Get("/api/usuarios", routes.GetUsuarios)
 	app.Post("/api/permisos", routes.CreatePermiso)
 	app.Post("/api/usuarios", routes.CreateUsuarios)
 
