@@ -38,6 +38,7 @@ func ConnectDb() {
 		&models.RelacionAlumnoGrupo{},
 		&models.RelacionGrupoLista{},
 		&models.Documentos{},
+		&models.HistorialLogs{},
 	)
 
 	Database = DbInstance{Db: db}
