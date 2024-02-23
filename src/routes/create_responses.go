@@ -64,6 +64,15 @@ func CreateAlumnosResponse(alumnoModel models.Alumnos) Alumnos {
 	}
 }
 
+func CreateAlumnoNombreResponse(alumnoModel models.Alumnos) AlumnosNombres {
+	return AlumnosNombres{
+		ID:        alumnoModel.ID,
+		Nombre:    alumnoModel.Nombre,
+		Apellidos: alumnoModel.Apellidos,
+		Matricula: alumnoModel.Matricula,
+	}
+}
+
 func CreateEspecialidadResponse(especialidadModel models.Especialidades) Especialidades {
 	return Especialidades{
 		ID:           especialidadModel.ID,
@@ -104,8 +113,12 @@ func CreateGruposConcluidosResponse(gruposConcluidosModel models.GruposConcluido
 
 func CreatePermisosResponse(permisosModel models.Permisos) Permisos {
 	return Permisos{
-		ID:      permisosModel.ID,
-		Permiso: permisosModel.Permiso,
+		ID:             permisosModel.ID,
+		Permiso:        permisosModel.Permiso,
+		Administracion: permisosModel.Administracion,
+		Administrador:  permisosModel.Administrador,
+		Inscripcion:    permisosModel.Inscripcion,
+		ControlEscolar: permisosModel.ControlEscolar,
 	}
 }
 
@@ -131,7 +144,6 @@ func CreateUsuariosResponse(usuariosModel models.Usuarios, permiso Permisos) Usu
 	return Usuarios{
 		ID:       usuariosModel.ID,
 		Usuario:  usuariosModel.Usuario,
-		Password: usuariosModel.Password,
 		Permisos: permiso,
 	}
 }

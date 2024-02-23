@@ -200,3 +200,34 @@ func GetUsuarios(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(responseUsuarios)
 }
+
+func GetPermisos(c *fiber.Ctx) error {
+	permisos := []models.Permisos{}
+
+	database.Database.Db.Find(&permisos)
+
+	responsePermisos := []Permisos{}
+
+	for _, permiso := range permisos {
+
+		responsePermiso := CreatePermisosResponse(permiso)
+		responsePermisos = append(responsePermisos, responsePermiso)
+	}
+
+	return c.Status(200).JSON(responsePermisos)
+}
+
+func GetAlumnosNombres(c *fiber.Ctx) error {
+	alumnos := []models.Alumnos{}
+
+	database.Database.Db.Find(&alumnos)
+
+	responseAlumnos := []AlumnosNombres{}
+
+	for _, alumno := range alumnos {
+		responseAlumno := CreateAlumnoNombreResponse(alumno)
+		responseAlumnos = append(responseAlumnos, responseAlumno)
+	}
+
+	return c.Status(200).JSON(responseAlumnos)
+}

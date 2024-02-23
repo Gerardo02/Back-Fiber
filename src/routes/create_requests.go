@@ -29,15 +29,43 @@ func CreateCuentaAdmin(c *fiber.Ctx) error {
 }*/
 
 func CreateAlumno(c *fiber.Ctx) error {
+	var alumnoArray Alumnos
 	var alumno models.Alumnos
 	var docs models.Documentos
 	var admin models.Administraciones
 
-	if err := c.BodyParser(&alumno); err != nil {
+	if err := c.BodyParser(&alumnoArray); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 
+	//alumno.ID = alumnoArray.ID
+	alumno.Nombre = alumnoArray.Nombre
+	alumno.Apellidos = alumnoArray.Apellidos
+	alumno.Matricula = alumnoArray.Matricula
+	alumno.FechaNacimiento = alumnoArray.FechaNacimiento
+	alumno.Edad = alumnoArray.Edad
+	alumno.NombreTutor = alumnoArray.NombreTutor
+	alumno.CelularTutor = alumnoArray.CelularTutor
+	alumno.Curp = alumnoArray.Curp
+	alumno.Localidad = alumnoArray.Localidad
+	alumno.CodigoPostal = alumnoArray.CodigoPostal
+	alumno.Direccion = alumnoArray.Direccion
+	alumno.TelefonoFijo = alumnoArray.TelefonoFijo
+	alumno.Celular = alumnoArray.Celular
+	alumno.Correo = alumnoArray.Correo
+
 	database.Database.Db.Create(&alumno)
+
+	for _, especialidadRefer := range alumnoArray.EspecialidadRefer {
+
+		relacionEspecialidadAlumno := models.RelacionAlumnoGrupo{
+			AlumnoRefer:       alumno.ID,
+			EspecialidadRefer: especialidadRefer,
+		}
+
+		// Use Create to insert a new row
+		database.Database.Db.Create(&relacionEspecialidadAlumno)
+	}
 
 	docs.AlumnoRefer = alumno.ID
 	admin.AlumnoRefer = alumno.ID

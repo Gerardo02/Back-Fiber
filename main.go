@@ -25,6 +25,7 @@ func setupRoutes(app *fiber.App, secretKey string) {
 	// alumnos
 	app.Post("/api/alumnos", routes.CreateEspecialidadRelacionMiddleware, routes.CreateAlumno)
 	app.Get("/api/alumnos", routes.GetAllAlumnos)
+	app.Get("/api/alumnos/nombres", routes.GetAlumnosNombres)
 	app.Put("/api/alumnos/:id", routes.UpdateAlumnos)
 	app.Delete("/api/alumnos/:id", routes.DeleteAlumno)
 
@@ -49,8 +50,12 @@ func setupRoutes(app *fiber.App, secretKey string) {
 
 	// permisos
 	app.Get("/api/usuarios", routes.GetUsuarios)
+	app.Get("/api/permisos", routes.GetPermisos)
+
+	app.Delete("/api/usuarios", routes.DeleteUser)
 	app.Post("/api/permisos", routes.CreatePermiso)
 	app.Post("/api/usuarios", routes.CreateUsuarios)
+	app.Post("/api/login", routes.AuthenticateUser)
 
 	// especialidad
 	app.Post("/api/especialidad", routes.CreateEspecialidad)

@@ -116,3 +116,26 @@ func DropSoftDeletesGruposActivos(c *fiber.Ctx) error {
 	database.Database.Db.Exec("DELETE FROM grupos_activos WHERE deleted_at IS NOT NULL")
 	return c.Status(200).SendString("succesfully deleted all grupos fr fr no way back now")
 }
+
+func DeleteUser(c *fiber.Ctx) error {
+	var usuario models.Usuarios
+	var usersModel models.Usuarios
+
+	if err := c.BodyParser(&usuario); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	if err := findLoginUser(usuario.Usuario, &usersModel); err != nil {
+		return c.Status(200).JSON(err.Error())
+	}
+
+	if usuario.Password != usersModel.Password {
+		return c.Status(200).JSON("Wrong password")
+	}
+
+	if err := database.Database.Db.Delete(&usersModel).Error; err != nil {
+		return c.Status(404).JSON(err.Error())
+	}
+
+	return c.Status(200).JSON("Succesfully deleted user")
+}

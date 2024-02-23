@@ -1,3 +1,3 @@
 -- SQLite
--- DROP TABLE especialidades;
-DROP TABLE grupos_activos;
+DROP TABLE permisos;
+--DELETE FROM administraciones WHERE id = 23;
