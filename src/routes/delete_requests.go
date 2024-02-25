@@ -125,7 +125,7 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 
-	if err := findLoginUser(usuario.Usuario, &usersModel); err != nil {
+	if err := findUser(usuario.Usuario, &usersModel); err != nil {
 		return c.Status(200).JSON(err.Error())
 	}
 
@@ -138,4 +138,24 @@ func DeleteUser(c *fiber.Ctx) error {
 	}
 
 	return c.Status(200).JSON("Succesfully deleted user")
+}
+
+func DeletePermiso(c *fiber.Ctx) error {
+
+	id, err := c.ParamsInt("id")
+	var permisoModel models.Permisos
+
+	if err != nil {
+		return c.SendString("id is not a number")
+	}
+
+	if err := findPermisos(id, &permisoModel); err != nil {
+		return c.Status(200).JSON(err.Error())
+	}
+
+	if err := database.Database.Db.Delete(&permisoModel).Error; err != nil {
+		return c.Status(404).JSON(err.Error())
+	}
+
+	return c.Status(200).JSON("Succesfully deleted permiso")
 }

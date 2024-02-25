@@ -57,7 +57,7 @@ func findGrupoActivo(id int, grupo *models.GruposActivos) error {
 	return nil
 }
 
-func findLoginUser(user string, usuario *models.Usuarios) error {
+func findUser(user string, usuario *models.Usuarios) error {
 	database.Database.Db.Find(&usuario, "usuario = ?", user)
 
 	if usuario.Usuario == "" {

@@ -14,7 +14,7 @@ func AuthenticateUser(c *fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 
-	if err := findLoginUser(usuario.Usuario, &usersModel); err != nil {
+	if err := findUser(usuario.Usuario, &usersModel); err != nil {
 		return c.Status(201).JSON(err.Error())
 	}
 

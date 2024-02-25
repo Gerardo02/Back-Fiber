@@ -51,11 +51,15 @@ func setupRoutes(app *fiber.App, secretKey string) {
 	// permisos
 	app.Get("/api/usuarios", routes.GetUsuarios)
 	app.Get("/api/permisos", routes.GetPermisos)
+	app.Put("/api/permisos", routes.UpdatePermisoUser)
+	app.Delete("/api/permisos/:id", routes.DeletePermiso)
 
 	app.Delete("/api/usuarios", routes.DeleteUser)
 	app.Post("/api/permisos", routes.CreatePermiso)
 	app.Post("/api/usuarios", routes.CreateUsuarios)
 	app.Post("/api/login", routes.AuthenticateUser)
+	app.Put("/api/usuarios/:user", routes.UpdateUserName)
+	app.Put("/api/password", routes.UpdateUserPassWord)
 
 	// especialidad
 	app.Post("/api/especialidad", routes.CreateEspecialidad)

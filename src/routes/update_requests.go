@@ -149,3 +149,113 @@ func UpdateAdmin(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(responseAdmin)
 }
+
+func UpdateUserName(c *fiber.Ctx) error {
+	user := c.Params("user")
+	var userModel models.Usuarios
+	var usuario models.Usuarios
+
+	if !validString(user) {
+		return c.SendString("Invalid user parameter")
+	}
+
+	if err := findUser(user, &userModel); err != nil {
+		return c.Status(200).JSON(err.Error())
+	}
+
+	if err := c.BodyParser(&usuario); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	if usuario.Password != userModel.Password {
+		return c.Status(200).JSON("Wrong password")
+	}
+
+	type UpdatedUserName struct {
+		Usuario  string `json:"usuario"`
+		Password string `json:"password"`
+	}
+
+	var UpdatedData UpdatedUserName
+
+	if err := c.BodyParser(&UpdatedData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	userModel.Usuario = UpdatedData.Usuario
+	userModel.Password = UpdatedData.Password
+
+	database.Database.Db.Save(&userModel)
+
+	return c.Status(200).JSON("Usuario actualizado succesfully")
+}
+
+func UpdateUserPassWord(c *fiber.Ctx) error {
+
+	var userModel models.Usuarios
+	var usuario models.Usuarios
+
+	if err := c.BodyParser(&usuario); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	if err := findUser(usuario.Usuario, &userModel); err != nil {
+		return c.Status(200).JSON(err.Error())
+	}
+
+	type UpdatedUserPassWord struct {
+		Usuario  string `json:"usuario"`
+		Password string `json:"password"`
+	}
+
+	var UpdatedData UpdatedUserPassWord
+
+	if err := c.BodyParser(&UpdatedData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	userModel.Usuario = UpdatedData.Usuario
+	userModel.Password = UpdatedData.Password
+
+	database.Database.Db.Save(&userModel)
+
+	return c.Status(200).JSON("Password actualizado succesfully")
+}
+
+func UpdatePermisoUser(c *fiber.Ctx) error {
+
+	var userModel models.Usuarios
+	var usuario models.Usuarios
+
+	if err := c.BodyParser(&usuario); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	if err := findUser(usuario.Usuario, &userModel); err != nil {
+		return c.Status(200).JSON(err.Error())
+	}
+
+	type UpdatedUserPermiso struct {
+		Usuario string `json:"usuario"`
+		Permiso int    `json:"permisos_id"`
+	}
+
+	var UpdatedData UpdatedUserPermiso
+
+	if err := c.BodyParser(&UpdatedData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	userModel.Usuario = UpdatedData.Usuario
+	userModel.PermisosRefer = UpdatedData.Permiso
+
+	database.Database.Db.Save(&userModel)
+
+	return c.Status(200).JSON("Permiso updated succesfully")
+}
+
+/*** Methods unrelated from routes and updates ***/
+
+func validString(s string) bool {
+	return s != ""
+}
