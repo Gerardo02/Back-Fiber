@@ -254,6 +254,50 @@ func UpdatePermisoUser(c *fiber.Ctx) error {
 	return c.Status(200).JSON("Permiso updated succesfully")
 }
 
+func UpdateRelacionAlumnoEspecialidad(c *fiber.Ctx) error {
+
+	id, err := c.ParamsInt("id")
+	var relacionAumno models.RelacionAlumnoGrupo
+
+	if err != nil {
+		return c.SendString("id is not an int")
+	}
+
+	type UpdatedRelacionAlumnoGrupo struct {
+		EspecialidadesRefer int `json:"especialidad_id"`
+	}
+
+	var UpdatedData UpdatedRelacionAlumnoGrupo
+
+	if err := c.BodyParser(&UpdatedData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	if err := findRelacionEspecialidad(id, UpdatedData.EspecialidadesRefer, &relacionAumno); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	relacionAumno.EspecialidadRefer = 0
+
+	database.Database.Db.Save(&relacionAumno)
+
+	result := database.Database.Db.Exec("DELETE FROM relacion_alumno_grupos WHERE grupos_activos_refer = 0 AND grupos_aprobados_refer = 0 AND especialidad_refer = 0")
+
+	if result.Error != nil {
+		// Handle the error
+		// Example: log the error, return an error response, etc.
+		return c.Status(500).JSON(fiber.Map{"error": result.Error.Error()})
+	}
+
+	// Check the number of rows affected
+	if result.RowsAffected == 0 {
+		// Rows were not deleted
+		return c.Status(404).JSON(fiber.Map{"message": "No matching rows found"})
+	}
+
+	return c.Status(200).JSON("Relacion updated succesfully")
+}
+
 /*** Methods unrelated from routes and updates ***/
 
 func validString(s string) bool {

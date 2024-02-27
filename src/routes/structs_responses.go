@@ -32,10 +32,11 @@ type Alumnos struct {
 }
 
 type AlumnosNombres struct {
-	ID        int    `json:"id" gorm:"primaryKey"`
-	Nombre    string `json:"nombre"`
-	Apellidos string `json:"apellidos"`
-	Matricula string `json:"matricula"`
+	ID           int              `json:"id" gorm:"primaryKey"`
+	Nombre       string           `json:"nombre"`
+	Apellidos    string           `json:"apellidos"`
+	Matricula    string           `json:"matricula"`
+	Especialidad []Especialidades `json:"especialidad"`
 }
 
 type Especialidades struct {
@@ -48,6 +49,9 @@ type GruposActivos struct {
 	ID              int            `json:"id" gorm:"primaryKey"`
 	Nombre          string         `json:"nombre"`
 	NombreMaestro   string         `json:"nombre_maestro"`
+	Dia             string         `json:"dia"`
+	Entrada         string         `json:"entrada"`
+	Salida          string         `json:"salida"`
 	CantidadAlumnos int            `json:"cantidad_de_alumnos"`
 	Trimestre       int            `json:"trimestre"`
 	ListaAsistencia []string       `json:"lista_asistencia"`

@@ -27,6 +27,16 @@ func findAlumno(id int, alumno *models.Alumnos) error {
 	return nil
 }
 
+func findRelacionEspecialidad(alumnoRefer, especialidadRefer int, relacion *models.RelacionAlumnoGrupo) error {
+	database.Database.Db.Where("alumno_refer = ? AND especialidad_refer = ?", alumnoRefer, especialidadRefer).First(&relacion)
+
+	if relacion.ID == 0 {
+		return errors.New("relacion does not exist")
+	}
+
+	return nil
+}
+
 func findDocuments(id int, documents *models.Documentos) error {
 	database.Database.Db.Find(&documents, "alumno_refer = ?", id)
 

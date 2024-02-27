@@ -225,7 +225,24 @@ func GetAlumnosNombres(c *fiber.Ctx) error {
 	responseAlumnos := []AlumnosNombres{}
 
 	for _, alumno := range alumnos {
-		responseAlumno := CreateAlumnoNombreResponse(alumno)
+		relaciones := []models.RelacionAlumnoGrupo{}
+		database.Database.Db.Where("alumno_refer = ?", alumno.ID).Find(&relaciones)
+
+		responseEspecialidades := []Especialidades{}
+
+		for _, relacion := range relaciones {
+			if relacion.EspecialidadRefer != 0 {
+				var especialidad models.Especialidades
+
+				database.Database.Db.First(&especialidad, relacion.EspecialidadRefer)
+
+				responseEspecialidad := CreateEspecialidadResponse(especialidad)
+				responseEspecialidades = append(responseEspecialidades, responseEspecialidad)
+			}
+
+		}
+
+		responseAlumno := CreateAlumnoNombreResponse(alumno, responseEspecialidades)
 		responseAlumnos = append(responseAlumnos, responseAlumno)
 	}
 

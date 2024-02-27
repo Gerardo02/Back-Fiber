@@ -64,12 +64,13 @@ func CreateAlumnosResponse(alumnoModel models.Alumnos) Alumnos {
 	}
 }
 
-func CreateAlumnoNombreResponse(alumnoModel models.Alumnos) AlumnosNombres {
+func CreateAlumnoNombreResponse(alumnoModel models.Alumnos, especialidades []Especialidades) AlumnosNombres {
 	return AlumnosNombres{
-		ID:        alumnoModel.ID,
-		Nombre:    alumnoModel.Nombre,
-		Apellidos: alumnoModel.Apellidos,
-		Matricula: alumnoModel.Matricula,
+		ID:           alumnoModel.ID,
+		Nombre:       alumnoModel.Nombre,
+		Apellidos:    alumnoModel.Apellidos,
+		Matricula:    alumnoModel.Matricula,
+		Especialidad: especialidades,
 	}
 }
 
@@ -85,6 +86,10 @@ func CreateGruposActivosResponse(gruposActivosModel models.GruposActivos, especi
 	return GruposActivos{
 		ID:              gruposActivosModel.ID,
 		Nombre:          gruposActivosModel.Nombre,
+		NombreMaestro:   gruposActivosModel.NombreMaestro,
+		Dia:             gruposActivosModel.Dia,
+		Entrada:         gruposActivosModel.Entrada,
+		Salida:          gruposActivosModel.Salida,
 		CantidadAlumnos: gruposActivosModel.CantidadAlumnos,
 		Trimestre:       gruposActivosModel.Trimestre,
 		ListaAsistencia: listaAsistencia,
@@ -96,6 +101,10 @@ func CreateGruposActivosAlumnosResponse(gruposActivosModel models.GruposActivos,
 	return GruposActivos{
 		ID:              gruposActivosModel.ID,
 		Nombre:          gruposActivosModel.Nombre,
+		NombreMaestro:   gruposActivosModel.NombreMaestro,
+		Dia:             gruposActivosModel.Dia,
+		Entrada:         gruposActivosModel.Entrada,
+		Salida:          gruposActivosModel.Salida,
 		CantidadAlumnos: gruposActivosModel.CantidadAlumnos,
 		Trimestre:       gruposActivosModel.Trimestre,
 		Especialidad:    especialidad,
