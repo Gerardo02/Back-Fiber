@@ -17,7 +17,7 @@ var Database DbInstance
 
 func ConnectDb() {
 
-	dsn := "postgres://fl0user:JaUWpuBi6f2d@ep-long-base-a5jp6wje.us-east-2.aws.neon.fl0.io:5432/MasterAcademy?sslmode=require"
+	dsn := "postgresql://Gerardo02:dSeCz3ws5NnX@ep-damp-dream-a5e51qgg.us-east-2.aws.neon.tech/master_academy?sslmode=require"
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
