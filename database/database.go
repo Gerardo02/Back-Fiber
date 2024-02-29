@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/Gerardo02/Back-Fiber/models"
+	"github.com/Gerardo02/Back-Fiber/src/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -17,7 +18,7 @@ var Database DbInstance
 
 func ConnectDb() {
 
-	dsn := "postgresql://Gerardo02:dSeCz3ws5NnX@ep-damp-dream-a5e51qgg.us-east-2.aws.neon.tech/master_academy?sslmode=require"
+	dsn := utils.GoDotEnvVariable("dsn")
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
