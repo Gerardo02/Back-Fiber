@@ -67,6 +67,16 @@ func findGrupoActivo(id int, grupo *models.GruposActivos) error {
 	return nil
 }
 
+func findRelacionAlumnoGrupo(grupo int, alumno int, relacion *models.RelacionAlumnoGrupo) error {
+	database.Database.Db.Where("grupos_activos_refer = ? AND alumno_refer = ?", grupo, alumno).First(&relacion)
+
+	if relacion.ID == 0 {
+		return errors.New("grupo does not exist")
+	}
+
+	return nil
+}
+
 func findUser(user string, usuario *models.Usuarios) error {
 	database.Database.Db.Find(&usuario, "usuario = ?", user)
 

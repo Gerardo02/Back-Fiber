@@ -298,6 +298,87 @@ func UpdateRelacionAlumnoEspecialidad(c *fiber.Ctx) error {
 	return c.Status(200).JSON("Relacion updated succesfully")
 }
 
+func UpdateGrupoActivo(c *fiber.Ctx) error {
+
+	id, err := c.ParamsInt("id")
+	var grupo models.GruposActivos
+
+	if err != nil {
+		return c.SendString("id is not an int")
+	}
+
+	if err := findGrupoActivo(id, &grupo); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	type UpdatedGrupoActivo struct {
+		Nombre            string `json:"nombre"`
+		NombreMaestro     string `json:"nombre_maestro"`
+		Dia               string `json:"dia"`
+		Entrada           string `json:"entrada"`
+		Salida            string `json:"salida"`
+		CantidadAlumnos   int    `json:"cantidad_de_alumnos"`
+		Trimestre         int    `json:"trimestre"`
+		EspecialidadRefer int    `json:"especialidad_id"`
+	}
+
+	var UpdatedData UpdatedGrupoActivo
+
+	if err := c.BodyParser(&UpdatedData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	grupo.Nombre = UpdatedData.Nombre
+	grupo.NombreMaestro = UpdatedData.NombreMaestro
+	grupo.Dia = UpdatedData.Dia
+	grupo.Entrada = UpdatedData.Entrada
+	grupo.Salida = UpdatedData.Salida
+	grupo.CantidadAlumnos = UpdatedData.CantidadAlumnos
+	grupo.Trimestre = UpdatedData.Trimestre
+	grupo.EspecialidadRefer = UpdatedData.EspecialidadRefer
+
+	database.Database.Db.Save(&grupo)
+
+	return c.Status(200).JSON("Grupo updated succesfully")
+}
+
+func UpdateRelacionAlumnoGrupo(c *fiber.Ctx) error {
+
+	id, err := c.ParamsInt("id")
+	var relacion models.RelacionAlumnoGrupo
+	var grupo models.GruposActivos
+
+	if err != nil {
+		return c.SendString("id is not an int")
+	}
+
+	type UpdatedRelacionAlumnoGrupo struct {
+		AlumnoRefer int `json:"alumno_id"`
+	}
+
+	var UpdatedData UpdatedRelacionAlumnoGrupo
+
+	if err := c.BodyParser(&UpdatedData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	if err := findRelacionAlumnoGrupo(id, UpdatedData.AlumnoRefer, &relacion); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	if err := findGrupoActivo(id, &grupo); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	relacion.GruposActivosRefer = 0
+	grupo.CantidadAlumnos -= 1
+
+	database.Database.Db.Save(&relacion)
+	database.Database.Db.Save(&grupo)
+
+	return c.Status(200).JSON("Grupo updated succesfully")
+}
+
 /*** Methods unrelated from routes and updates ***/
 
 func validString(s string) bool {

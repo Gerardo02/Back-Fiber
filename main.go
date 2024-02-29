@@ -10,7 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
-func setupRoutes(app *fiber.App, secretKey string) {
+func setupRoutes(app *fiber.App) {
 
 	app.Post("/login", utils.GenerateToken)
 
@@ -32,6 +32,7 @@ func setupRoutes(app *fiber.App, secretKey string) {
 	// grupos
 	app.Get("/api/grupos", routes.GetAllGruposActivos)
 	app.Post("/api/grupos", routes.CreateGrupoActivo)
+	app.Put("/api/grupos/:id", routes.UpdateGrupoActivo)
 	app.Delete("/api/grupos", routes.DeleteAllGruposActivos)
 	app.Delete("/api/grupos/purge", routes.DropSoftDeletesGruposActivos)
 	app.Delete("/api/grupos/:id", routes.DeleteSingleGroup)
@@ -40,7 +41,8 @@ func setupRoutes(app *fiber.App, secretKey string) {
 	// relacion alumnos - grupos
 	app.Get("/api/alumnos/grupos", routes.GetAllRelacionAlumnosGrupos)
 	app.Post("/api/alumnos/grupos", routes.CreateRelacionAlumnosGrupos)
-	app.Put("/api/alumnos/grupos/:id", routes.UpdateRelacionAlumnoEspecialidad)
+	app.Put("/api/alumnos/grupos/especialidad/:id", routes.UpdateRelacionAlumnoEspecialidad)
+	app.Put("/api/alumnos/grupos/:id", routes.UpdateRelacionAlumnoGrupo)
 
 	// relacion grupos - listas
 	app.Post("/api/grupos/listas", routes.CreateRelacionGrupoListas)
@@ -80,8 +82,8 @@ func main() {
 		AllowOrigins: "http://localhost:5173",
 	}))
 
-	secretKey := utils.GoDotEnvVariable("SECRET_KEY")
-	setupRoutes(app, secretKey)
+	// secretKey := utils.GoDotEnvVariable("SECRET_KEY")
+	setupRoutes(app)
 
 	log.Fatal(app.Listen(":3030"))
 }

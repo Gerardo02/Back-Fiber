@@ -16,6 +16,14 @@ type DbInstance struct {
 var Database DbInstance
 
 func ConnectDb() {
+
+	// dsn := "postgres://fl0user:JaUWpuBi6f2d@ep-long-base-a5jp6wje.us-east-2.aws.neon.fl0.io:5432/MasterAcademy?sslmode=require"
+
+	// db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// if err != nil {
+	// 	log.Fatal("Failed to connect to the database! \n", err.Error())
+	// }
+
 	db, err := gorm.Open(sqlite.Open("api.db"), &gorm.Config{})
 
 	if err != nil {
