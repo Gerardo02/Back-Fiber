@@ -2,9 +2,9 @@ package database
 
 import (
 	"log"
+	"os"
 
 	"github.com/Gerardo02/Back-Fiber/models"
-	"github.com/Gerardo02/Back-Fiber/src/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -18,7 +18,7 @@ var Database DbInstance
 
 func ConnectDb() {
 
-	dsn := utils.GoDotEnvVariable("dsn")
+	dsn := os.Getenv("dsn")
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

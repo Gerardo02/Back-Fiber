@@ -2,13 +2,13 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/Gerardo02/Back-Fiber/database"
 	"github.com/Gerardo02/Back-Fiber/src/routes"
 	"github.com/Gerardo02/Back-Fiber/src/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/joho/godotenv"
 )
 
 func setupRoutes(app *fiber.App) {
@@ -77,11 +77,6 @@ func setupRoutes(app *fiber.App) {
 
 func main() {
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	database.ConnectDb()
 	app := fiber.New()
 
@@ -91,6 +86,11 @@ func main() {
 
 	// secretKey := utils.GoDotEnvVariable("SECRET_KEY")
 	setupRoutes(app)
-	PORT := utils.GoDotEnvVariable("PORT")
-	log.Fatal(app.Listen(PORT))
+	PORT := os.Getenv("PORT")
+
+	if PORT == "" {
+		PORT = "3000"
+	}
+
+	log.Fatal(app.Listen("0.0.0.0:" + PORT))
 }
