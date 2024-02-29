@@ -84,6 +84,6 @@ func main() {
 
 	// secretKey := utils.GoDotEnvVariable("SECRET_KEY")
 	setupRoutes(app)
-
-	log.Fatal(app.Listen(":3030"))
+	PORT := utils.GoDotEnvVariable("PORT")
+	log.Fatal(app.Listen(PORT))
 }
