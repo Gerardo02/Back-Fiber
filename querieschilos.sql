@@ -5,7 +5,6 @@
 -- UPDATE from relacion_alumno_grupos WHERE alumno_refer = 37 AND especialidad_refer = 1
 
 DELETE FROM relacion_alumno_grupos
-WHERE grupos_activos_refer = 0
-  AND grupos_aprobados_refer = 0
-  AND especialidad_refer = 0;
+WHERE alumno_refer = 0
+
 
