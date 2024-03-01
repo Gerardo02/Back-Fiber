@@ -28,6 +28,19 @@ func CreateCuentaAdmin(c *fiber.Ctx) error {
 
 }*/
 
+func CreateRelacionAlumnoEspecialidad(c *fiber.Ctx) error {
+
+	var relacion models.RelacionAlumnoGrupo
+
+	if err := c.BodyParser(&relacion); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	database.Database.Db.Create(&relacion)
+
+	return c.Status(200).JSON("Relacion created succesfully")
+}
+
 func CreateAlumno(c *fiber.Ctx) error {
 	var alumnoArray Alumnos
 	var alumno models.Alumnos
@@ -55,17 +68,6 @@ func CreateAlumno(c *fiber.Ctx) error {
 	alumno.Correo = alumnoArray.Correo
 
 	database.Database.Db.Create(&alumno)
-
-	for _, especialidadRefer := range alumnoArray.EspecialidadRefer {
-
-		relacionEspecialidadAlumno := models.RelacionAlumnoGrupo{
-			AlumnoRefer:       alumno.ID,
-			EspecialidadRefer: especialidadRefer,
-		}
-
-		// Use Create to insert a new row
-		database.Database.Db.Create(&relacionEspecialidadAlumno)
-	}
 
 	docs.AlumnoRefer = alumno.ID
 	admin.AlumnoRefer = alumno.ID
