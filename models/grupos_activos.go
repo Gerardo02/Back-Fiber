@@ -14,4 +14,6 @@ type GruposActivos struct {
 	Trimestre         int            `json:"trimestre"`
 	EspecialidadRefer int            `json:"especialidad_id"`
 	Especialidad      Especialidades `gorm:"foreignKey:EspecialidadRefer"`
+	CicloRefer        int            `json:"ciclo_escolar_id"`
+	CicloEscolar      CicloEscolar   `gorm:"foreignKey:CicloRefer"`
 }

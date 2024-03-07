@@ -28,6 +28,18 @@ func CreateCuentaAdmin(c *fiber.Ctx) error {
 
 }*/
 
+func CreateCicloEscolar(c *fiber.Ctx) error {
+	var ciclo models.CicloEscolar
+
+	if err := c.BodyParser(&ciclo); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	database.Database.Db.Create(&ciclo)
+
+	return c.Status(200).JSON("Ciclo escolar created succesfully")
+}
+
 func CreateRelacionAlumnoEspecialidad(c *fiber.Ctx) error {
 
 	var relacion models.RelacionAlumnoGrupo
@@ -121,13 +133,7 @@ func CreateGrupoConcluido(c *fiber.Ctx) error {
 
 	database.Database.Db.Create(&grupoConcluido)
 
-	var especialidad models.Especialidades
-
-	database.Database.Db.Find(&especialidad)
-
-	responseEspecialidad := CreateEspecialidadResponse(especialidad)
-	responseGrupoConcluido := CreateGruposConcluidosResponse(grupoConcluido, responseEspecialidad)
-	return c.Status(200).JSON(responseGrupoConcluido)
+	return c.Status(200).JSON("Grupo concluid creado successfully")
 }
 
 func CreatePermiso(c *fiber.Ctx) error {

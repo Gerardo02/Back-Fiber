@@ -9,26 +9,33 @@ type Administraciones struct {
 	Estado    string `json:"estado"`
 }
 
+type CicloEscolar struct {
+	ID        int    `json:"id" gorm:"primaryKey"`
+	Nombre    string `json:"nombre"`
+	Year      string `json:"year"`
+	Trimestre int    `json:"trimestre"`
+	Activo    bool   `json:"activo"`
+}
+
 type Alumnos struct {
-	ID                int                `json:"id" gorm:"primaryKey"`
-	Nombre            string             `json:"nombre"`
-	Apellidos         string             `json:"apellidos"`
-	Matricula         string             `json:"matricula"`
-	FechaNacimiento   string             `json:"fecha_nacimiento"`
-	Edad              int                `json:"edad"`
-	NombreTutor       string             `json:"nombre_tutor"`
-	CelularTutor      string             `json:"celular_tutor"`
-	Curp              string             `json:"curp"`
-	Localidad         string             `json:"localidad"`
-	CodigoPostal      string             `json:"codigo_postal"`
-	Direccion         string             `json:"direccion"`
-	TelefonoFijo      string             `json:"telefono_fijo"`
-	Celular           string             `json:"celular"`
-	Correo            string             `json:"correo"`
-	EspecialidadRefer []int              `json:"especialidad_id"`
-	Especialidad      []Especialidades   `json:"especialidad"`     //arreglo
-	GrupoActivo       []GruposActivos    `json:"grupos_activos"`   //arreglo
-	GruposAprobados   []GruposConcluidos `json:"grupos_aprobados"` //arreglo
+	ID              int                `json:"id" gorm:"primaryKey"`
+	Nombre          string             `json:"nombre"`
+	Apellidos       string             `json:"apellidos"`
+	Matricula       string             `json:"matricula"`
+	FechaNacimiento string             `json:"fecha_nacimiento"`
+	Edad            int                `json:"edad"`
+	NombreTutor     string             `json:"nombre_tutor"`
+	CelularTutor    string             `json:"celular_tutor"`
+	Curp            string             `json:"curp"`
+	Localidad       string             `json:"localidad"`
+	CodigoPostal    string             `json:"codigo_postal"`
+	Direccion       string             `json:"direccion"`
+	TelefonoFijo    string             `json:"telefono_fijo"`
+	Celular         string             `json:"celular"`
+	Correo          string             `json:"correo"`
+	Especialidad    []Especialidades   `json:"especialidad"`     //arreglo
+	GrupoActivo     []GruposActivos    `json:"grupos_activos"`   //arreglo
+	GruposAprobados []GruposConcluidos `json:"grupos_aprobados"` //arreglo
 }
 
 type AlumnosNombres struct {
@@ -55,6 +62,7 @@ type GruposActivos struct {
 	CantidadAlumnos int            `json:"cantidad_de_alumnos"`
 	Trimestre       int            `json:"trimestre"`
 	ListaAsistencia []string       `json:"lista_asistencia"`
+	CicloEscolar    CicloEscolar   `json:"ciclo_escolar"`
 	Especialidad    Especialidades `json:"especialidad"`
 }
 
@@ -63,6 +71,7 @@ type GruposConcluidos struct {
 	Nombre          string         `json:"nombre"`
 	CantidadAlumnos int            `json:"cantidad_de_alumnos"`
 	Especialidad    Especialidades `json:"especialidad"`
+	CicloEscolar    CicloEscolar   `json:"ciclo_escolar"`
 }
 
 type Permisos struct {

@@ -9,4 +9,6 @@ type GruposConcluidos struct {
 	CantidadAlumnos   int            `json:"cantidad_de_alumnos"`
 	EspecialidadRefer int            `json:"especialidad_id"`
 	Especialidad      Especialidades `gorm:"foreignKey:EspecialidadRefer"`
+	CicloEscolarRefer int            `json:"ciclo_escolar_id"`
+	CicloEscolar      CicloEscolar   `gorm:"foreignKey:CicloEscolarRefer"`
 }

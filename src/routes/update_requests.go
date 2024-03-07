@@ -379,6 +379,42 @@ func UpdateRelacionAlumnoGrupo(c *fiber.Ctx) error {
 	return c.Status(200).JSON("Grupo updated succesfully")
 }
 
+func UpdateCicloEscolar(c *fiber.Ctx) error {
+
+	id, err := c.ParamsInt("id")
+	var ciclo models.CicloEscolar
+
+	if err != nil {
+		return c.SendString("id is not an int")
+	}
+
+	if err := findCicloEscolar(id, &ciclo); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	type UpdatedCicloEscolar struct {
+		Nombre    string `json:"nombre"`
+		Year      string `json:"year"`
+		Trimestre int    `json:"trimestre"`
+		Activo    bool   `json:"activo"`
+	}
+
+	var UpdatedData UpdatedCicloEscolar
+
+	if err := c.BodyParser(&UpdatedData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	ciclo.Nombre = UpdatedData.Nombre
+	ciclo.Year = UpdatedData.Year
+	ciclo.Trimestre = UpdatedData.Trimestre
+	ciclo.Activo = UpdatedData.Activo
+
+	database.Database.Db.Save(&ciclo)
+
+	return c.Status(200).JSON("Ciclo updated succesfully")
+}
+
 /*** Methods unrelated from routes and updates ***/
 
 func validString(s string) bool {

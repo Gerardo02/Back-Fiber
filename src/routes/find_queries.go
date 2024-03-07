@@ -37,6 +37,16 @@ func findRelacionEspecialidad(alumnoRefer, especialidadRefer int, relacion *mode
 	return nil
 }
 
+func findEspecialidad(id int, especialidad *models.Especialidades) error {
+	database.Database.Db.Find(&especialidad, "id = ?", id)
+
+	if especialidad.ID == 0 {
+		return errors.New("Especialidad no existe")
+	}
+
+	return nil
+}
+
 func findDocuments(id int, documents *models.Documentos) error {
 	database.Database.Db.Find(&documents, "alumno_refer = ?", id)
 
@@ -62,6 +72,16 @@ func findGrupoActivo(id int, grupo *models.GruposActivos) error {
 
 	if grupo.ID == 0 {
 		return errors.New("grupo does not exist")
+	}
+
+	return nil
+}
+
+func findCicloEscolar(id int, ciclo *models.CicloEscolar) error {
+	database.Database.Db.Find(&ciclo, "id = ?", id)
+
+	if ciclo.ID == 0 {
+		return errors.New("ciclo does not exist")
 	}
 
 	return nil

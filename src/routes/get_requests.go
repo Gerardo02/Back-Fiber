@@ -6,6 +6,51 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func GetCiclosEscolares(c *fiber.Ctx) error {
+	ciclos := []models.CicloEscolar{}
+
+	database.Database.Db.Find(&ciclos)
+
+	responseCiclos := []CicloEscolar{}
+
+	for _, ciclo := range ciclos {
+
+		responseCiclo := CreateGetCicloEscolarResponse(ciclo)
+		responseCiclos = append(responseCiclos, responseCiclo)
+	}
+
+	return c.Status(200).JSON(responseCiclos)
+}
+
+func GetGruposConcluidos(c *fiber.Ctx) error {
+	grupos := []models.GruposConcluidos{}
+
+	database.Database.Db.Find(&grupos)
+
+	responseGrupos := []GruposConcluidos{}
+
+	for _, grupo := range grupos {
+
+		var ciclo models.CicloEscolar
+		var especialidad models.Especialidades
+
+		if err := findCicloEscolar(grupo.CicloEscolarRefer, &ciclo); err != nil {
+			return c.Status(400).JSON(err.Error())
+		}
+
+		if err := findEspecialidad(grupo.EspecialidadRefer, &especialidad); err != nil {
+			return c.Status(400).JSON(err.Error())
+		}
+
+		responseEspecialidad := CreateEspecialidadResponse(especialidad)
+		responseCiclo := CreateGetCicloEscolarResponse(ciclo)
+		responseGrupo := CreateGruposConcluidosResponse(grupo, responseEspecialidad, responseCiclo)
+		responseGrupos = append(responseGrupos, responseGrupo)
+	}
+
+	return c.Status(200).JSON(responseGrupos)
+}
+
 func GetAllAlumnos(c *fiber.Ctx) error {
 	alumnos := []models.Alumnos{}
 	database.Database.Db.Find(&alumnos)
@@ -41,7 +86,7 @@ func GetAllAlumnos(c *fiber.Ctx) error {
 				database.Database.Db.First(&especialidad, grupoConcluido.EspecialidadRefer)
 
 				responseEspecialidad := CreateEspecialidadResponse(especialidad)
-				responseGrupoConcluido := CreateGruposConcluidosResponse(grupoConcluido, responseEspecialidad)
+				responseGrupoConcluido := CreateAlumnosGruposConcluidosResponse(grupoConcluido, responseEspecialidad)
 				responseGruposConcluidos = append(responseGruposConcluidos, responseGrupoConcluido)
 			}
 
@@ -73,6 +118,7 @@ func GetAllGruposActivos(c *fiber.Ctx) error {
 		listas := []string{}
 
 		var especialidad models.Especialidades
+		var cicloEscolar models.CicloEscolar
 		database.Database.Db.Where("grupos_activos_refer = ?", grupo.ID).Find(&relaciones)
 
 		for _, relacion := range relaciones {
@@ -83,10 +129,16 @@ func GetAllGruposActivos(c *fiber.Ctx) error {
 			}
 		}
 
+		// if err := findCicloEscolar(grupo.CicloRefer, &cicloEscolar); err != nil {
+		// 	return c.Status(400).JSON(err.Error())
+		// }
+
 		database.Database.Db.First(&especialidad, grupo.EspecialidadRefer)
+		database.Database.Db.First(&cicloEscolar, grupo.CicloRefer)
 
 		responseEspecialidad := CreateEspecialidadResponse(especialidad)
-		responseGrupo := CreateGruposActivosResponse(grupo, responseEspecialidad, listas)
+		responseCicloEscolar := CreateGetCicloEscolarResponse(cicloEscolar)
+		responseGrupo := CreateGruposActivosResponse(grupo, responseEspecialidad, listas, responseCicloEscolar)
 		responseGrupos = append(responseGrupos, responseGrupo)
 
 	}

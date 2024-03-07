@@ -22,6 +22,11 @@ func setupRoutes(app *fiber.App) {
 		return c.SendString("asdasd")
 	})
 
+	// ciclo escolar
+	app.Post("/api/ciclo", routes.CreateCicloEscolar)
+	app.Get("/api/ciclo", routes.GetCiclosEscolares)
+	app.Put("/api/ciclo/:id", routes.UpdateCicloEscolar)
+
 	// alumnos
 	app.Post("/api/alumnos", routes.CreateEspecialidadRelacionMiddleware, routes.CreateAlumno)
 	app.Get("/api/alumnos", routes.GetAllAlumnos)
@@ -36,7 +41,8 @@ func setupRoutes(app *fiber.App) {
 	app.Delete("/api/grupos", routes.DeleteAllGruposActivos)
 	app.Delete("/api/grupos/purge", routes.DropSoftDeletesGruposActivos)
 	app.Delete("/api/grupos/:id", routes.DeleteSingleGroup)
-	app.Post("/api/grupos/aprobados", routes.CreateGrupoConcluido)
+	app.Post("/api/grupos/concluidos", routes.CreateGrupoConcluido)
+	app.Get("/api/grupos/concluidos", routes.GetGruposConcluidos)
 
 	// relacion alumnos - grupos
 	app.Get("/api/alumnos/grupos", routes.GetAllRelacionAlumnosGrupos)
