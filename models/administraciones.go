@@ -7,5 +7,6 @@ type Administraciones struct {
 	ID          int  `json:"id" gorm:"primaryKey"`
 	Adeudo      bool `json:"adeudo"`
 	Estado      int  `json:"estado"`
+	Dinero      int  `json:"dinero"`
 	AlumnoRefer int  `json:"alumno_id"`
 }

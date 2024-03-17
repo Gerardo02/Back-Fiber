@@ -41,7 +41,7 @@ func findEspecialidad(id int, especialidad *models.Especialidades) error {
 	database.Database.Db.Find(&especialidad, "id = ?", id)
 
 	if especialidad.ID == 0 {
-		return errors.New("Especialidad no existe")
+		return errors.New("especialidad no existe")
 	}
 
 	return nil

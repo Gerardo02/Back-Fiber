@@ -235,3 +235,16 @@ func CreateUsuarios(c *fiber.Ctx) error {
 	responseUsuario := CreateUsuariosResponse(usuario, responsePermisos)
 	return c.Status(200).JSON(responseUsuario)
 }
+
+func CreateAdminHistorial(c *fiber.Ctx) error {
+	var historial models.HistorialLogs
+
+	if err := c.BodyParser(&historial); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	database.Database.Db.Create(&historial)
+
+	return c.Status(200).JSON("Historial creado")
+
+}

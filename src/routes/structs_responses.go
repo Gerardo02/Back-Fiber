@@ -17,6 +17,15 @@ type CicloEscolar struct {
 	Activo    bool   `json:"activo"`
 }
 
+type HistorialLogs struct {
+	ID         int            `json:"id" gorm:"primaryKey"`
+	Movimiento string         `json:"movimiento"`
+	Monto      int            `json:"monto"`
+	Hora       string         `json:"hora"`
+	Fecha      string         `json:"fecha"`
+	Alumno     AlumnosNombres `json:"alumno"`
+}
+
 type Alumnos struct {
 	ID              int                `json:"id" gorm:"primaryKey"`
 	Nombre          string             `json:"nombre"`

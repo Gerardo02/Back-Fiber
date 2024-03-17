@@ -199,9 +199,9 @@ func GetAdministraciones(c *fiber.Ctx) error {
 		}
 
 		if administracion.Adeudo {
-			adeudo = "Debe"
-		} else {
 			adeudo = "Al corriente"
+		} else {
+			adeudo = "Debe"
 		}
 
 		responseAdministracion := CreateGetAdminResponse(administracion, alumno.Nombre, alumno.Apellidos, alumno.Matricula, adeudo, estado)
@@ -299,4 +299,26 @@ func GetAlumnosNombres(c *fiber.Ctx) error {
 	}
 
 	return c.Status(200).JSON(responseAlumnos)
+}
+
+func GetHistorialAdimn(c *fiber.Ctx) error {
+	historiales := []models.HistorialLogs{}
+
+	database.Database.Db.Find(&historiales)
+
+	responseHistoriales := []HistorialLogs{}
+
+	for _, historial := range historiales {
+		var alumno models.Alumnos
+
+		if err := findAlumno(historial.AlumnoRefer, &alumno); err != nil {
+			return c.Status(400).JSON(err.Error())
+		}
+
+		responseAlumno := CreateAlumnoNombreNombreResponse(alumno)
+		responseHistorial := CreateHistorialResponse(historial, responseAlumno)
+		responseHistoriales = append(responseHistoriales, responseHistorial)
+	}
+
+	return c.Status(200).JSON(responseHistoriales)
 }

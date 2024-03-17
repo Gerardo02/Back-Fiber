@@ -13,6 +13,17 @@ func CreateGetAdminResponse(adminModel models.Administraciones, nombre string, a
 	}
 }
 
+func CreateHistorialResponse(historial models.HistorialLogs, alumno AlumnosNombres) HistorialLogs {
+	return HistorialLogs{
+		ID:         historial.ID,
+		Movimiento: historial.Movimiento,
+		Monto:      historial.Monto,
+		Hora:       historial.Hora,
+		Fecha:      historial.Fecha,
+		Alumno:     alumno,
+	}
+}
+
 func CreateGetCicloEscolarResponse(cicloModel models.CicloEscolar) CicloEscolar {
 	return CicloEscolar{
 		ID:        cicloModel.ID,
@@ -81,6 +92,15 @@ func CreateAlumnoNombreResponse(alumnoModel models.Alumnos, especialidades []Esp
 		Apellidos:    alumnoModel.Apellidos,
 		Matricula:    alumnoModel.Matricula,
 		Especialidad: especialidades,
+	}
+}
+
+func CreateAlumnoNombreNombreResponse(alumnoModel models.Alumnos) AlumnosNombres {
+	return AlumnosNombres{
+		ID:        alumnoModel.ID,
+		Nombre:    alumnoModel.Nombre,
+		Apellidos: alumnoModel.Apellidos,
+		Matricula: alumnoModel.Matricula,
 	}
 }
 

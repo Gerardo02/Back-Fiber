@@ -79,6 +79,10 @@ func setupRoutes(app *fiber.App) {
 	app.Get("/api/documentos", routes.GetDocumentosEntregados)
 	app.Put("/api/documentos/:id", routes.UpdateDocuments)
 
+	// historial
+	app.Post("/api/historial", routes.CreateAdminHistorial)
+	app.Get("/api/historial", routes.GetHistorialAdimn)
+
 }
 
 func main() {
