@@ -107,6 +107,16 @@ func findRelacionGrupo(grupo int, relacion *models.RelacionAlumnoGrupo) error {
 	return nil
 }
 
+func findRelacionAlumno(grupo int, alumno int, relacion *models.RelacionAlumnoGrupo) error {
+	database.Database.Db.Where("grupos_aprobados_refer = ? AND alumno_refer = ?", grupo, alumno).First(&relacion)
+
+	if relacion.ID == 0 {
+		return errors.New("relacion does not exist")
+	}
+
+	return nil
+}
+
 func findUser(user string, usuario *models.Usuarios) error {
 	database.Database.Db.Find(&usuario, "usuario = ?", user)
 

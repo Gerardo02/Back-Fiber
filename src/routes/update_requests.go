@@ -376,6 +376,37 @@ func UpdateRelacionAlumnoGrupo(c *fiber.Ctx) error {
 	return c.Status(200).JSON("Grupo updated succesfully")
 }
 
+func UpdateRelacionAlumnoGrupoEstado(c *fiber.Ctx) error {
+
+	id, err := c.ParamsInt("id")
+	var relacion models.RelacionAlumnoGrupo
+
+	if err != nil {
+		return c.SendString("id is not an int")
+	}
+
+	type UpdatedRelacionAlumnoGrupo struct {
+		AlumnoRefer int `json:"alumno_id"`
+		Estado      int `json:"estado"`
+	}
+
+	var UpdatedData UpdatedRelacionAlumnoGrupo
+
+	if err := c.BodyParser(&UpdatedData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	if err := findRelacionAlumno(id, UpdatedData.AlumnoRefer, &relacion); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	relacion.Estado = UpdatedData.Estado
+
+	database.Database.Db.Save(&relacion)
+
+	return c.Status(200).JSON("estado updated succesfully")
+}
+
 func UpdateCicloEscolar(c *fiber.Ctx) error {
 
 	id, err := c.ParamsInt("id")

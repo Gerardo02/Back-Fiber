@@ -50,6 +50,7 @@ func setupRoutes(app *fiber.App) {
 	app.Post("/api/alumnos/especialidad", routes.CreateRelacionAlumnoEspecialidad)
 	app.Put("/api/alumnos/grupos/especialidad/:id", routes.UpdateRelacionAlumnoEspecialidad)
 	app.Put("/api/alumnos/grupos/:id", routes.UpdateRelacionAlumnoGrupo)
+	app.Put("/api/alumnos/grupos/concluidos/:id", routes.UpdateRelacionAlumnoGrupoEstado)
 
 	// relacion grupos - listas
 	app.Post("/api/grupos/listas", routes.CreateRelacionGrupoListas)
