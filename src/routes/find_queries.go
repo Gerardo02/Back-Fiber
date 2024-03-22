@@ -97,11 +97,31 @@ func findRelacionAlumnoGrupo(grupo int, alumno int, relacion *models.RelacionAlu
 	return nil
 }
 
+func findRelacionGrupo(grupo int, relacion *models.RelacionAlumnoGrupo) error {
+	database.Database.Db.Where("grupos_activos_refer = ?", grupo).First(&relacion)
+
+	if relacion.ID == 0 {
+		return errors.New("grupo does not exist")
+	}
+
+	return nil
+}
+
 func findUser(user string, usuario *models.Usuarios) error {
 	database.Database.Db.Find(&usuario, "usuario = ?", user)
 
 	if usuario.Usuario == "" {
 		return errors.New("usuario no existe")
+	}
+
+	return nil
+}
+
+func findHorario(id int, horario *models.Horarios, diaData int) error {
+	database.Database.Db.Find(&horario, "grupo_refer = ? AND dia_data = ?", id, diaData)
+
+	if horario.GrupoRefer == 0 {
+		return errors.New("horario does not exist")
 	}
 
 	return nil

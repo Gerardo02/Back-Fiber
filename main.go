@@ -83,6 +83,10 @@ func setupRoutes(app *fiber.App) {
 	app.Post("/api/historial", routes.CreateAdminHistorial)
 	app.Get("/api/historial", routes.GetHistorialAdimn)
 
+	//horario
+	app.Post("/api/horario", routes.CreateHorario)
+	app.Put("/api/horario/:id", routes.UpdateHorario)
+
 }
 
 func main() {

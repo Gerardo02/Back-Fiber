@@ -112,19 +112,27 @@ func CreateEspecialidadResponse(especialidadModel models.Especialidades) Especia
 	}
 }
 
-func CreateGruposActivosResponse(gruposActivosModel models.GruposActivos, especialidad Especialidades, listaAsistencia []string, cicloEscolar CicloEscolar) GruposActivos {
+func CreateGruposActivosResponse(gruposActivosModel models.GruposActivos, especialidad Especialidades, listaAsistencia []string, cicloEscolar CicloEscolar, horario []Horarios) GruposActivos {
 	return GruposActivos{
 		ID:              gruposActivosModel.ID,
 		Nombre:          gruposActivosModel.Nombre,
 		NombreMaestro:   gruposActivosModel.NombreMaestro,
-		Dia:             gruposActivosModel.Dia,
-		Entrada:         gruposActivosModel.Entrada,
-		Salida:          gruposActivosModel.Salida,
 		CantidadAlumnos: gruposActivosModel.CantidadAlumnos,
+		Horario:         horario,
 		CicloEscolar:    cicloEscolar,
 		Trimestre:       gruposActivosModel.Trimestre,
 		ListaAsistencia: listaAsistencia,
 		Especialidad:    especialidad,
+	}
+}
+
+func CreateHorarioResponse(horarioModel models.Horarios) Horarios {
+	return Horarios{
+		ID:      horarioModel.ID,
+		Dia:     horarioModel.Dia,
+		Entrada: horarioModel.Entrada,
+		Salida:  horarioModel.Salida,
+		DiaData: horarioModel.DiaData,
 	}
 }
 
@@ -133,21 +141,19 @@ func CreateGruposActivosAlumnosResponse(gruposActivosModel models.GruposActivos,
 		ID:              gruposActivosModel.ID,
 		Nombre:          gruposActivosModel.Nombre,
 		NombreMaestro:   gruposActivosModel.NombreMaestro,
-		Dia:             gruposActivosModel.Dia,
-		Entrada:         gruposActivosModel.Entrada,
-		Salida:          gruposActivosModel.Salida,
 		CantidadAlumnos: gruposActivosModel.CantidadAlumnos,
 		Trimestre:       gruposActivosModel.Trimestre,
 		Especialidad:    especialidad,
 	}
 }
 
-func CreateAlumnosGruposConcluidosResponse(gruposConcluidosModel models.GruposConcluidos, especialidad Especialidades) GruposConcluidos {
+func CreateAlumnosGruposConcluidosResponse(gruposConcluidosModel models.GruposConcluidos, especialidad Especialidades, estado string) GruposConcluidos {
 	return GruposConcluidos{
 		ID:              gruposConcluidosModel.ID,
 		Nombre:          gruposConcluidosModel.Nombre,
 		CantidadAlumnos: gruposConcluidosModel.CantidadAlumnos,
 		Especialidad:    especialidad,
+		Estado:          estado,
 	}
 }
 
@@ -172,9 +178,10 @@ func CreatePermisosResponse(permisosModel models.Permisos) Permisos {
 	}
 }
 
-func CreateRelacionAlumnoGrupoResponse(relacionModel models.RelacionAlumnoGrupo) RelacionAlumnoGrupo {
+func CreateRelacionAlumnoGrupoResponse(relacionModel models.RelacionAlumnoGrupo, estado string) RelacionAlumnoGrupo {
 	return RelacionAlumnoGrupo{
 		ID:                   relacionModel.ID,
+		Estado:               estado,
 		AlumnoRefer:          relacionModel.AlumnoRefer,
 		GruposActivosRefer:   relacionModel.GruposActivosRefer,
 		GruposAprobadosRefer: relacionModel.GruposAprobadosRefer,

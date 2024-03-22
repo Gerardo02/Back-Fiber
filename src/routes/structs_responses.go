@@ -65,9 +65,7 @@ type GruposActivos struct {
 	ID              int            `json:"id" gorm:"primaryKey"`
 	Nombre          string         `json:"nombre"`
 	NombreMaestro   string         `json:"nombre_maestro"`
-	Dia             string         `json:"dia"`
-	Entrada         string         `json:"entrada"`
-	Salida          string         `json:"salida"`
+	Horario         []Horarios     `json:"horario"`
 	CantidadAlumnos int            `json:"cantidad_de_alumnos"`
 	Trimestre       int            `json:"trimestre"`
 	ListaAsistencia []string       `json:"lista_asistencia"`
@@ -75,8 +73,17 @@ type GruposActivos struct {
 	Especialidad    Especialidades `json:"especialidad"`
 }
 
+type Horarios struct {
+	ID      int    `json:"id" gorm:"primaryKey"`
+	Dia     string `json:"dia"`
+	Entrada string `json:"entrada"`
+	Salida  string `json:"salida"`
+	DiaData int    `json:"diaData"`
+}
+
 type GruposConcluidos struct {
 	ID              int            `json:"id" gorm:"primaryKey"`
+	Estado          string         `json:"estado"`
 	Nombre          string         `json:"nombre"`
 	CantidadAlumnos int            `json:"cantidad_de_alumnos"`
 	Especialidad    Especialidades `json:"especialidad"`
@@ -93,11 +100,12 @@ type Permisos struct {
 }
 
 type RelacionAlumnoGrupo struct {
-	ID                   int `json:"id"`
-	AlumnoRefer          int `json:"alumno_id"`
-	GruposActivosRefer   int `json:"grupo_activo_id"`
-	GruposAprobadosRefer int `json:"grupo_aprobado_id"`
-	EspecialidadesRefer  int `json:"especialidad_id"`
+	ID                   int    `json:"id"`
+	Estado               string `json:"estado"`
+	AlumnoRefer          int    `json:"alumno_id"`
+	GruposActivosRefer   int    `json:"grupo_activo_id"`
+	GruposAprobadosRefer int    `json:"grupo_aprobado_id"`
+	EspecialidadesRefer  int    `json:"especialidad_id"`
 }
 
 type Usuarios struct {
@@ -129,4 +137,12 @@ const (
 	Pendiente = iota
 	EnProceso
 	Listo
+)
+
+const (
+	NoAplica = iota
+	Proceso
+	Desercion
+	Acreditacion
+	NoAcreditacion
 )

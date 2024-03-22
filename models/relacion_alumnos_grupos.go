@@ -5,6 +5,7 @@ import "gorm.io/gorm"
 type RelacionAlumnoGrupo struct {
 	gorm.Model
 	ID                   int              `json:"id" gorm:"primaryKey"`
+	Estado               int              `json:"estado"`
 	AlumnoRefer          int              `json:"alumno_id"`
 	GruposActivosRefer   int              `json:"grupo_activo_id"`
 	GruposAprobadosRefer int              `json:"grupo_aprobado_id"`

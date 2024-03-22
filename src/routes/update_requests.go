@@ -330,9 +330,6 @@ func UpdateGrupoActivo(c *fiber.Ctx) error {
 
 	grupo.Nombre = UpdatedData.Nombre
 	grupo.NombreMaestro = UpdatedData.NombreMaestro
-	grupo.Dia = UpdatedData.Dia
-	grupo.Entrada = UpdatedData.Entrada
-	grupo.Salida = UpdatedData.Salida
 	grupo.CantidadAlumnos = UpdatedData.CantidadAlumnos
 	grupo.Trimestre = UpdatedData.Trimestre
 	grupo.EspecialidadRefer = UpdatedData.EspecialidadRefer
@@ -413,6 +410,40 @@ func UpdateCicloEscolar(c *fiber.Ctx) error {
 	database.Database.Db.Save(&ciclo)
 
 	return c.Status(200).JSON("Ciclo updated succesfully")
+}
+
+func UpdateHorario(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	var horario models.Horarios
+
+	if err != nil {
+		return c.SendString("id is not an int")
+	}
+
+	type UpdatedHorarios struct {
+		Dia     string `json:"dia"`
+		Entrada string `json:"entrada"`
+		Salida  string `json:"salida"`
+		DiaData int    `json:"diaData"`
+	}
+
+	var UpdatedData UpdatedHorarios
+
+	if err := c.BodyParser(&UpdatedData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	if err := findHorario(id, &horario, UpdatedData.DiaData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	horario.Entrada = UpdatedData.Entrada
+	horario.Salida = UpdatedData.Salida
+	horario.Dia = UpdatedData.Dia
+
+	database.Database.Db.Save(&horario)
+
+	return c.Status(200).JSON("Horario updated succesfully")
 }
 
 /*** Methods unrelated from routes and updates ***/

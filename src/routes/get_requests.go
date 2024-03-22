@@ -81,12 +81,25 @@ func GetAllAlumnos(c *fiber.Ctx) error {
 			if relacion.GruposAprobadosRefer != 0 {
 				var grupoConcluido models.GruposConcluidos
 				var especialidad models.Especialidades
+				var estado string
 
 				database.Database.Db.First(&grupoConcluido, relacion.GruposAprobadosRefer)
 				database.Database.Db.First(&especialidad, grupoConcluido.EspecialidadRefer)
 
+				if NoAplica == relacion.Estado {
+					estado = "No Aplica"
+				} else if Proceso == relacion.Estado {
+					estado = "En proceso"
+				} else if Desercion == relacion.Estado {
+					estado = "Desercion"
+				} else if Acreditacion == relacion.Estado {
+					estado = "Acreditado"
+				} else if NoAcreditacion == relacion.Estado {
+					estado = "No Acreditado"
+				}
+
 				responseEspecialidad := CreateEspecialidadResponse(especialidad)
-				responseGrupoConcluido := CreateAlumnosGruposConcluidosResponse(grupoConcluido, responseEspecialidad)
+				responseGrupoConcluido := CreateAlumnosGruposConcluidosResponse(grupoConcluido, responseEspecialidad, estado)
 				responseGruposConcluidos = append(responseGruposConcluidos, responseGrupoConcluido)
 			}
 
@@ -115,11 +128,14 @@ func GetAllGruposActivos(c *fiber.Ctx) error {
 
 	for _, grupo := range grupos {
 		relaciones := []models.RelacionGrupoLista{}
+		horarios := []models.Horarios{}
 		listas := []string{}
 
 		var especialidad models.Especialidades
 		var cicloEscolar models.CicloEscolar
 		database.Database.Db.Where("grupos_activos_refer = ?", grupo.ID).Find(&relaciones)
+		database.Database.Db.Where("grupo_refer = ?", grupo.ID).Find(&horarios)
+		responseHorarios := []Horarios{}
 
 		for _, relacion := range relaciones {
 			if relacion.ListaAsistencia != "" {
@@ -127,6 +143,12 @@ func GetAllGruposActivos(c *fiber.Ctx) error {
 				listas = append(listas, relacion.ListaAsistencia)
 
 			}
+		}
+
+		for _, horario := range horarios {
+			responseHorario := CreateHorarioResponse(horario)
+			responseHorarios = append(responseHorarios, responseHorario)
+
 		}
 
 		// if err := findCicloEscolar(grupo.CicloRefer, &cicloEscolar); err != nil {
@@ -138,7 +160,7 @@ func GetAllGruposActivos(c *fiber.Ctx) error {
 
 		responseEspecialidad := CreateEspecialidadResponse(especialidad)
 		responseCicloEscolar := CreateGetCicloEscolarResponse(cicloEscolar)
-		responseGrupo := CreateGruposActivosResponse(grupo, responseEspecialidad, listas, responseCicloEscolar)
+		responseGrupo := CreateGruposActivosResponse(grupo, responseEspecialidad, listas, responseCicloEscolar, responseHorarios)
 		responseGrupos = append(responseGrupos, responseGrupo)
 
 	}
@@ -147,13 +169,26 @@ func GetAllGruposActivos(c *fiber.Ctx) error {
 
 func GetAllRelacionAlumnosGrupos(c *fiber.Ctx) error {
 	relaciones := []models.RelacionAlumnoGrupo{}
+	var estado string
 
 	database.Database.Db.Find(&relaciones)
 
 	responseRelaciones := []RelacionAlumnoGrupo{}
 
 	for _, relacion := range relaciones {
-		responseRelacion := CreateRelacionAlumnoGrupoResponse(relacion)
+		if NoAplica == relacion.Estado {
+			estado = "No Aplica"
+		} else if Proceso == relacion.Estado {
+			estado = "En proceso"
+		} else if Desercion == relacion.Estado {
+			estado = "Desercion"
+		} else if Acreditacion == relacion.Estado {
+			estado = "Acreditado"
+		} else if NoAcreditacion == relacion.Estado {
+			estado = "No Acreditado"
+		}
+
+		responseRelacion := CreateRelacionAlumnoGrupoResponse(relacion, estado)
 		responseRelaciones = append(responseRelaciones, responseRelacion)
 	}
 
@@ -168,6 +203,7 @@ func GetAllEspecialidades(c *fiber.Ctx) error {
 	responseEspecialidades := []Especialidades{}
 
 	for _, especialidad := range especialidades {
+
 		responseEspecialidad := CreateEspecialidadResponse(especialidad)
 		responseEspecialidades = append(responseEspecialidades, responseEspecialidad)
 	}
