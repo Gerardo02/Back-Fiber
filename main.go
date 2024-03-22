@@ -57,6 +57,7 @@ func setupRoutes(app *fiber.App) {
 
 	// administracion
 	app.Put("/api/administracion/:id", routes.UpdateAdmin)
+	app.Put("/api/administracion/pago/:id", routes.UpdateAdminForPago)
 	app.Get("/api/administracion", routes.GetAdministraciones)
 
 	// permisos

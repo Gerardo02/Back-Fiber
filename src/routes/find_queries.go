@@ -67,6 +67,17 @@ func findAdmin(id int, admin *models.Administraciones) error {
 	return nil
 }
 
+func findAdminPago(id int, admin *models.Administraciones) error {
+	result := database.Database.Db.First(admin, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return errors.New("admin not found")
+	}
+	return nil
+}
+
 func findGrupoActivo(id int, grupo *models.GruposActivos) error {
 	database.Database.Db.Find(&grupo, "id = ?", id)
 
@@ -82,6 +93,16 @@ func findCicloEscolar(id int, ciclo *models.CicloEscolar) error {
 
 	if ciclo.ID == 0 {
 		return errors.New("ciclo does not exist")
+	}
+
+	return nil
+}
+
+func findCicloActivo(ciclo *models.CicloEscolar) error {
+	database.Database.Db.Find(&ciclo, "activo = ?", true)
+
+	if ciclo.ID == 0 {
+		return errors.New("no active ciclos")
 	}
 
 	return nil

@@ -139,7 +139,7 @@ func UpdateAdmin(c *fiber.Ctx) error {
 
 	if admin.Adeudo {
 		adeudo = "Debe"
-	} else {
+	} else if !admin.Adeudo {
 		adeudo = "Al corriente"
 	}
 
@@ -148,6 +148,59 @@ func UpdateAdmin(c *fiber.Ctx) error {
 	responseAdmin := CreateAdminResponse(admin, adeudo, estado)
 
 	return c.Status(200).JSON(responseAdmin)
+}
+
+func UpdateAdminForPago(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	var admin models.Administraciones
+	var ciclo models.CicloEscolar
+
+	if err != nil {
+		return c.SendString("id is not an int")
+	}
+
+	if err := findAdmin(id, &admin); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	findCicloActivo(&ciclo)
+
+	type UpdatedAdmin struct {
+		Dinero int `json:"dinero"`
+	}
+
+	var UpdatedData UpdatedAdmin
+
+	if err := c.BodyParser(&UpdatedData); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	admin.Estado = 1
+	admin.Dinero += UpdatedData.Dinero
+
+	if ciclo.Trimestre == 1 {
+		if admin.Dinero >= 1000 {
+			admin.Adeudo = true
+		}
+	} else if ciclo.Trimestre == 2 {
+		if admin.Dinero >= 2000 {
+			admin.Adeudo = true
+		}
+	} else if ciclo.Trimestre == 3 {
+		if admin.Dinero >= 3000 {
+			admin.Adeudo = true
+		}
+	} else {
+		if admin.Dinero >= 3000 {
+			admin.Dinero = 0
+			admin.Adeudo = true
+			admin.Estado = 1
+		}
+	}
+
+	database.Database.Db.Save(&admin)
+
+	return c.Status(200).JSON("Pago registrado")
 }
 
 func UpdateUserName(c *fiber.Ctx) error {
@@ -411,6 +464,8 @@ func UpdateCicloEscolar(c *fiber.Ctx) error {
 
 	id, err := c.ParamsInt("id")
 	var ciclo models.CicloEscolar
+	admins := []models.Administraciones{}
+	database.Database.Db.Find(&admins)
 
 	if err != nil {
 		return c.SendString("id is not an int")
@@ -437,6 +492,52 @@ func UpdateCicloEscolar(c *fiber.Ctx) error {
 	ciclo.Year = UpdatedData.Year
 	ciclo.Trimestre = UpdatedData.Trimestre
 	ciclo.Activo = UpdatedData.Activo
+
+	for _, admin := range admins {
+		var foundAdmin models.Administraciones
+		if err := findAdminPago(admin.AlumnoRefer, &foundAdmin); err != nil {
+			// Handle error
+			continue
+		}
+		if ciclo.Activo {
+
+			if foundAdmin.Dinero == 0 {
+				foundAdmin.Estado = 0
+			}
+
+			if ciclo.Trimestre == 1 {
+				if foundAdmin.Dinero < 1000 {
+					foundAdmin.Adeudo = false
+				} else {
+					foundAdmin.Adeudo = true
+				}
+			} else if ciclo.Trimestre == 2 {
+				if foundAdmin.Dinero < 2000 {
+					foundAdmin.Adeudo = false
+				} else {
+					foundAdmin.Adeudo = true
+				}
+			} else if ciclo.Trimestre == 3 {
+				if foundAdmin.Dinero < 3000 {
+					foundAdmin.Adeudo = false
+				} else {
+					foundAdmin.Adeudo = true
+				}
+			}
+
+			database.Database.Db.Save(&foundAdmin)
+
+		} else if !ciclo.Activo {
+			if foundAdmin.Adeudo {
+				foundAdmin.Dinero = 0
+				foundAdmin.Adeudo = true
+				foundAdmin.Estado = 0
+			}
+
+			database.Database.Db.Save(&foundAdmin)
+		}
+
+	}
 
 	database.Database.Db.Save(&ciclo)
 

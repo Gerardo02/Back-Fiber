@@ -8,6 +8,7 @@ func CreateGetAdminResponse(adminModel models.Administraciones, nombre string, a
 		Nombre:    nombre,
 		Apellido:  apellido,
 		Matricula: matricula,
+		Dinero:    adminModel.Dinero,
 		Adeudo:    adeudo,
 		Estado:    estado,
 	}

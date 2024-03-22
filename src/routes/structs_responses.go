@@ -2,6 +2,7 @@ package routes
 
 type Administraciones struct {
 	ID        int    `json:"id" gorm:"primaryKey"`
+	Dinero    int    `json:"dinero"`
 	Nombre    string `json:"nombre"`
 	Apellido  string `json:"apellido"`
 	Matricula string `json:"matricula"`

@@ -31,11 +31,45 @@ func CreateCuentaAdmin(c *fiber.Ctx) error {
 func CreateCicloEscolar(c *fiber.Ctx) error {
 	var ciclo models.CicloEscolar
 
+	admins := []models.Administraciones{}
+	database.Database.Db.Find(&admins)
+
 	if err := c.BodyParser(&ciclo); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 
 	database.Database.Db.Create(&ciclo)
+
+	for _, admin := range admins {
+
+		var foundAdmin models.Administraciones
+		if err := findAdminPago(admin.AlumnoRefer, &foundAdmin); err != nil {
+			// Handle error
+			continue
+		}
+
+		if ciclo.Trimestre == 1 {
+			if foundAdmin.Dinero < 1000 {
+				foundAdmin.Adeudo = false
+			} else {
+				foundAdmin.Adeudo = true
+			}
+		} else if ciclo.Trimestre == 2 {
+			if foundAdmin.Dinero < 2000 {
+				foundAdmin.Adeudo = false
+			} else {
+				foundAdmin.Adeudo = true
+			}
+		} else if ciclo.Trimestre == 3 {
+			if foundAdmin.Dinero < 3000 {
+				foundAdmin.Adeudo = false
+			} else {
+				foundAdmin.Adeudo = true
+			}
+		}
+
+		database.Database.Db.Save(&foundAdmin)
+	}
 
 	return c.Status(200).JSON("Ciclo escolar created succesfully")
 }
