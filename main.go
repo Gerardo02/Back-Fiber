@@ -97,8 +97,9 @@ func main() {
 	database.ConnectDb()
 	app := fiber.New()
 
+	CORSURL := os.Getenv("URL")
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173",
+		AllowOrigins: CORSURL,
 	}))
 
 	// secretKey := utils.GoDotEnvVariable("SECRET_KEY")
