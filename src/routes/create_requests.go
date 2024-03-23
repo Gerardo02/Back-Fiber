@@ -28,6 +28,79 @@ func CreateCuentaAdmin(c *fiber.Ctx) error {
 
 }*/
 
+func CreateCicloEscolar(c *fiber.Ctx) error {
+	var ciclo models.CicloEscolar
+
+	admins := []models.Administraciones{}
+	database.Database.Db.Find(&admins)
+
+	if err := c.BodyParser(&ciclo); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	database.Database.Db.Create(&ciclo)
+
+	for _, admin := range admins {
+
+		var foundAdmin models.Administraciones
+		if err := findAdminPago(admin.AlumnoRefer, &foundAdmin); err != nil {
+			// Handle error
+			continue
+		}
+
+		if ciclo.Trimestre == 1 {
+			if foundAdmin.Dinero < 1000 {
+				foundAdmin.Adeudo = false
+			} else {
+				foundAdmin.Adeudo = true
+			}
+		} else if ciclo.Trimestre == 2 {
+			if foundAdmin.Dinero < 2000 {
+				foundAdmin.Adeudo = false
+			} else {
+				foundAdmin.Adeudo = true
+			}
+		} else if ciclo.Trimestre == 3 {
+			if foundAdmin.Dinero < 3000 {
+				foundAdmin.Adeudo = false
+			} else {
+				foundAdmin.Adeudo = true
+			}
+		}
+
+		database.Database.Db.Save(&foundAdmin)
+	}
+
+	return c.Status(200).JSON("Ciclo escolar created succesfully")
+}
+
+func CreateHorario(c *fiber.Ctx) error {
+	var horario models.Horarios
+	var grupo models.GruposActivos
+
+	if err := c.BodyParser(&horario); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	// Retrieve the last grupo
+	result := database.Database.Db.Order("id DESC").First(&grupo)
+	if result.Error != nil && result.RowsAffected == 0 {
+		// If there are no rows, set grupo.ID to the last created ID
+		lastID := 0
+		database.Database.Db.Raw("SELECT last_value FROM grupos_activos").Row().Scan(&lastID)
+		grupo.ID = lastID
+	} else if result.Error != nil {
+		// Handle error if any
+		return c.Status(500).JSON(result.Error.Error())
+	}
+
+	horario.GrupoRefer = grupo.ID
+
+	database.Database.Db.Create(&horario)
+
+	return c.Status(200).JSON("Horario created succesfully")
+}
+
 func CreateRelacionAlumnoEspecialidad(c *fiber.Ctx) error {
 
 	var relacion models.RelacionAlumnoGrupo
@@ -113,21 +186,42 @@ func CreateGrupoActivo(c *fiber.Ctx) error {
 }
 
 func CreateGrupoConcluido(c *fiber.Ctx) error {
-	var grupoConcluido models.GruposConcluidos
 
-	if err := c.BodyParser(&grupoConcluido); err != nil {
+	type ResponseJson struct {
+		Nombre            string `json:"nombre"`
+		CantidadAlumnos   int    `json:"cantidad_de_alumnos"`
+		EspecialidadRefer int    `json:"especialidad_id"`
+		CicloEscolarRefer int    `json:"ciclo_escolar_id"`
+		TemporaryId       int    `json:"id_grupo_place_holder"`
+	}
+
+	var grabData ResponseJson
+	var grupoConcluido models.GruposConcluidos
+	var relacion models.RelacionAlumnoGrupo
+	var relacionModel models.RelacionAlumnoGrupo
+
+	if err := c.BodyParser(&grabData); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 
+	grupoConcluido.CantidadAlumnos = grabData.CantidadAlumnos
+	grupoConcluido.Nombre = grabData.Nombre
+	grupoConcluido.EspecialidadRefer = grabData.EspecialidadRefer
+	grupoConcluido.CicloEscolarRefer = grabData.CicloEscolarRefer
+
 	database.Database.Db.Create(&grupoConcluido)
 
-	var especialidad models.Especialidades
+	if err := findRelacionGrupo(grabData.TemporaryId, &relacion); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
 
-	database.Database.Db.Find(&especialidad)
+	relacionModel.AlumnoRefer = relacion.AlumnoRefer
+	relacionModel.Estado = 1
+	relacionModel.GruposAprobadosRefer = grupoConcluido.ID
 
-	responseEspecialidad := CreateEspecialidadResponse(especialidad)
-	responseGrupoConcluido := CreateGruposConcluidosResponse(grupoConcluido, responseEspecialidad)
-	return c.Status(200).JSON(responseGrupoConcluido)
+	database.Database.Db.Create(&relacionModel)
+
+	return c.Status(200).JSON("Grupo concluido creado successfully")
 }
 
 func CreatePermiso(c *fiber.Ctx) error {
@@ -152,8 +246,7 @@ func CreateRelacionAlumnosGrupos(c *fiber.Ctx) error {
 
 	database.Database.Db.Create(&relacion)
 
-	relacionResponse := CreateRelacionAlumnoGrupoResponse(relacion)
-	return c.Status(200).JSON(relacionResponse)
+	return c.Status(200).JSON("relacion created succesfully")
 }
 
 func CreateRelacionGrupoListas(c *fiber.Ctx) error {
@@ -228,4 +321,17 @@ func CreateUsuarios(c *fiber.Ctx) error {
 	responsePermisos := CreatePermisosResponse(permisos)
 	responseUsuario := CreateUsuariosResponse(usuario, responsePermisos)
 	return c.Status(200).JSON(responseUsuario)
+}
+
+func CreateAdminHistorial(c *fiber.Ctx) error {
+	var historial models.HistorialLogs
+
+	if err := c.BodyParser(&historial); err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+
+	database.Database.Db.Create(&historial)
+
+	return c.Status(200).JSON("Historial creado")
+
 }

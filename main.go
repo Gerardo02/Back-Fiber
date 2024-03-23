@@ -23,6 +23,11 @@ func setupRoutes(app *fiber.App) {
 		return c.SendString("asdasd")
 	})
 
+	// ciclo escolar
+	app.Post("/api/ciclo", routes.CreateCicloEscolar)
+	app.Get("/api/ciclo", routes.GetCiclosEscolares)
+	app.Put("/api/ciclo/:id", routes.UpdateCicloEscolar)
+
 	// alumnos
 	app.Post("/api/alumnos", routes.CreateEspecialidadRelacionMiddleware, routes.CreateAlumno)
 	app.Get("/api/alumnos", routes.GetAllAlumnos)
@@ -37,7 +42,8 @@ func setupRoutes(app *fiber.App) {
 	app.Delete("/api/grupos", routes.DeleteAllGruposActivos)
 	app.Delete("/api/grupos/purge", routes.DropSoftDeletesGruposActivos)
 	app.Delete("/api/grupos/:id", routes.DeleteSingleGroup)
-	app.Post("/api/grupos/aprobados", routes.CreateGrupoConcluido)
+	app.Post("/api/grupos/concluidos", routes.CreateGrupoConcluido)
+	app.Get("/api/grupos/concluidos", routes.GetGruposConcluidos)
 
 	// relacion alumnos - grupos
 	app.Get("/api/alumnos/grupos", routes.GetAllRelacionAlumnosGrupos)
@@ -45,12 +51,14 @@ func setupRoutes(app *fiber.App) {
 	app.Post("/api/alumnos/especialidad", routes.CreateRelacionAlumnoEspecialidad)
 	app.Put("/api/alumnos/grupos/especialidad/:id", routes.UpdateRelacionAlumnoEspecialidad)
 	app.Put("/api/alumnos/grupos/:id", routes.UpdateRelacionAlumnoGrupo)
+	app.Put("/api/alumnos/grupos/concluidos/:id", routes.UpdateRelacionAlumnoGrupoEstado)
 
 	// relacion grupos - listas
 	app.Post("/api/grupos/listas", routes.CreateRelacionGrupoListas)
 
 	// administracion
 	app.Put("/api/administracion/:id", routes.UpdateAdmin)
+	app.Put("/api/administracion/pago/:id", routes.UpdateAdminForPago)
 	app.Get("/api/administracion", routes.GetAdministraciones)
 
 	// permisos
@@ -73,6 +81,14 @@ func setupRoutes(app *fiber.App) {
 	// documentos entregados
 	app.Get("/api/documentos", routes.GetDocumentosEntregados)
 	app.Put("/api/documentos/:id", routes.UpdateDocuments)
+
+	// historial
+	app.Post("/api/historial", routes.CreateAdminHistorial)
+	app.Get("/api/historial", routes.GetHistorialAdimn)
+
+	//horario
+	app.Post("/api/horario", routes.CreateHorario)
+	app.Put("/api/horario/:id", routes.UpdateHorario)
 
 }
 

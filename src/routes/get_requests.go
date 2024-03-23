@@ -6,6 +6,51 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func GetCiclosEscolares(c *fiber.Ctx) error {
+	ciclos := []models.CicloEscolar{}
+
+	database.Database.Db.Find(&ciclos)
+
+	responseCiclos := []CicloEscolar{}
+
+	for _, ciclo := range ciclos {
+
+		responseCiclo := CreateGetCicloEscolarResponse(ciclo)
+		responseCiclos = append(responseCiclos, responseCiclo)
+	}
+
+	return c.Status(200).JSON(responseCiclos)
+}
+
+func GetGruposConcluidos(c *fiber.Ctx) error {
+	grupos := []models.GruposConcluidos{}
+
+	database.Database.Db.Find(&grupos)
+
+	responseGrupos := []GruposConcluidos{}
+
+	for _, grupo := range grupos {
+
+		var ciclo models.CicloEscolar
+		var especialidad models.Especialidades
+
+		if err := findCicloEscolar(grupo.CicloEscolarRefer, &ciclo); err != nil {
+			return c.Status(400).JSON(err.Error())
+		}
+
+		if err := findEspecialidad(grupo.EspecialidadRefer, &especialidad); err != nil {
+			return c.Status(400).JSON(err.Error())
+		}
+
+		responseEspecialidad := CreateEspecialidadResponse(especialidad)
+		responseCiclo := CreateGetCicloEscolarResponse(ciclo)
+		responseGrupo := CreateGruposConcluidosResponse(grupo, responseEspecialidad, responseCiclo)
+		responseGrupos = append(responseGrupos, responseGrupo)
+	}
+
+	return c.Status(200).JSON(responseGrupos)
+}
+
 func GetAllAlumnos(c *fiber.Ctx) error {
 	alumnos := []models.Alumnos{}
 	database.Database.Db.Find(&alumnos)
@@ -36,12 +81,25 @@ func GetAllAlumnos(c *fiber.Ctx) error {
 			if relacion.GruposAprobadosRefer != 0 {
 				var grupoConcluido models.GruposConcluidos
 				var especialidad models.Especialidades
+				var estado string
 
 				database.Database.Db.First(&grupoConcluido, relacion.GruposAprobadosRefer)
 				database.Database.Db.First(&especialidad, grupoConcluido.EspecialidadRefer)
 
+				if NoAplica == relacion.Estado {
+					estado = "No Aplica"
+				} else if Proceso == relacion.Estado {
+					estado = "En proceso"
+				} else if Desercion == relacion.Estado {
+					estado = "Desercion"
+				} else if Acreditacion == relacion.Estado {
+					estado = "Acreditado"
+				} else if NoAcreditacion == relacion.Estado {
+					estado = "No Acreditado"
+				}
+
 				responseEspecialidad := CreateEspecialidadResponse(especialidad)
-				responseGrupoConcluido := CreateGruposConcluidosResponse(grupoConcluido, responseEspecialidad)
+				responseGrupoConcluido := CreateAlumnosGruposConcluidosResponse(grupoConcluido, responseEspecialidad, estado)
 				responseGruposConcluidos = append(responseGruposConcluidos, responseGrupoConcluido)
 			}
 
@@ -70,10 +128,14 @@ func GetAllGruposActivos(c *fiber.Ctx) error {
 
 	for _, grupo := range grupos {
 		relaciones := []models.RelacionGrupoLista{}
+		horarios := []models.Horarios{}
 		listas := []string{}
 
 		var especialidad models.Especialidades
+		var cicloEscolar models.CicloEscolar
 		database.Database.Db.Where("grupos_activos_refer = ?", grupo.ID).Find(&relaciones)
+		database.Database.Db.Where("grupo_refer = ?", grupo.ID).Find(&horarios)
+		responseHorarios := []Horarios{}
 
 		for _, relacion := range relaciones {
 			if relacion.ListaAsistencia != "" {
@@ -83,10 +145,22 @@ func GetAllGruposActivos(c *fiber.Ctx) error {
 			}
 		}
 
+		for _, horario := range horarios {
+			responseHorario := CreateHorarioResponse(horario)
+			responseHorarios = append(responseHorarios, responseHorario)
+
+		}
+
+		// if err := findCicloEscolar(grupo.CicloRefer, &cicloEscolar); err != nil {
+		// 	return c.Status(400).JSON(err.Error())
+		// }
+
 		database.Database.Db.First(&especialidad, grupo.EspecialidadRefer)
+		database.Database.Db.First(&cicloEscolar, grupo.CicloRefer)
 
 		responseEspecialidad := CreateEspecialidadResponse(especialidad)
-		responseGrupo := CreateGruposActivosResponse(grupo, responseEspecialidad, listas)
+		responseCicloEscolar := CreateGetCicloEscolarResponse(cicloEscolar)
+		responseGrupo := CreateGruposActivosResponse(grupo, responseEspecialidad, listas, responseCicloEscolar, responseHorarios)
 		responseGrupos = append(responseGrupos, responseGrupo)
 
 	}
@@ -95,13 +169,26 @@ func GetAllGruposActivos(c *fiber.Ctx) error {
 
 func GetAllRelacionAlumnosGrupos(c *fiber.Ctx) error {
 	relaciones := []models.RelacionAlumnoGrupo{}
+	var estado string
 
 	database.Database.Db.Find(&relaciones)
 
 	responseRelaciones := []RelacionAlumnoGrupo{}
 
 	for _, relacion := range relaciones {
-		responseRelacion := CreateRelacionAlumnoGrupoResponse(relacion)
+		if NoAplica == relacion.Estado {
+			estado = "No Aplica"
+		} else if Proceso == relacion.Estado {
+			estado = "En proceso"
+		} else if Desercion == relacion.Estado {
+			estado = "Desercion"
+		} else if Acreditacion == relacion.Estado {
+			estado = "Acreditado"
+		} else if NoAcreditacion == relacion.Estado {
+			estado = "No Acreditado"
+		}
+
+		responseRelacion := CreateRelacionAlumnoGrupoResponse(relacion, estado)
 		responseRelaciones = append(responseRelaciones, responseRelacion)
 	}
 
@@ -116,6 +203,7 @@ func GetAllEspecialidades(c *fiber.Ctx) error {
 	responseEspecialidades := []Especialidades{}
 
 	for _, especialidad := range especialidades {
+
 		responseEspecialidad := CreateEspecialidadResponse(especialidad)
 		responseEspecialidades = append(responseEspecialidades, responseEspecialidad)
 	}
@@ -147,9 +235,9 @@ func GetAdministraciones(c *fiber.Ctx) error {
 		}
 
 		if administracion.Adeudo {
-			adeudo = "Debe"
-		} else {
 			adeudo = "Al corriente"
+		} else {
+			adeudo = "Debe"
 		}
 
 		responseAdministracion := CreateGetAdminResponse(administracion, alumno.Nombre, alumno.Apellidos, alumno.Matricula, adeudo, estado)
@@ -247,4 +335,26 @@ func GetAlumnosNombres(c *fiber.Ctx) error {
 	}
 
 	return c.Status(200).JSON(responseAlumnos)
+}
+
+func GetHistorialAdimn(c *fiber.Ctx) error {
+	historiales := []models.HistorialLogs{}
+
+	database.Database.Db.Find(&historiales)
+
+	responseHistoriales := []HistorialLogs{}
+
+	for _, historial := range historiales {
+		var alumno models.Alumnos
+
+		if err := findAlumno(historial.AlumnoRefer, &alumno); err != nil {
+			return c.Status(400).JSON(err.Error())
+		}
+
+		responseAlumno := CreateAlumnoNombreNombreResponse(alumno)
+		responseHistorial := CreateHistorialResponse(historial, responseAlumno)
+		responseHistoriales = append(responseHistoriales, responseHistorial)
+	}
+
+	return c.Status(200).JSON(responseHistoriales)
 }
