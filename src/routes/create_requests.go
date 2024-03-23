@@ -104,10 +104,24 @@ func CreateHorario(c *fiber.Ctx) error {
 func CreateRelacionAlumnoEspecialidad(c *fiber.Ctx) error {
 
 	var relacion models.RelacionAlumnoGrupo
+	var alumnoId models.Alumnos
 
 	if err := c.BodyParser(&relacion); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
+
+	result := database.Database.Db.Order("id DESC").First(&alumnoId)
+	if result.Error != nil && result.RowsAffected == 0 {
+		// If there are no rows, set grupo.ID to the last created ID
+		lastID := 0
+		database.Database.Db.Raw("SELECT last_value FROM alumnos").Row().Scan(&lastID)
+		alumnoId.ID = lastID
+	} else if result.Error != nil {
+		// Handle error if any
+		return c.Status(500).JSON(result.Error.Error())
+	}
+
+	relacion.AlumnoRefer = alumnoId.ID
 
 	database.Database.Db.Create(&relacion)
 
