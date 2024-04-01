@@ -2,10 +2,9 @@ package database
 
 import (
 	"log"
-	"os"
 
 	"github.com/Gerardo02/Back-Fiber/models"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -18,18 +17,18 @@ var Database DbInstance
 
 func ConnectDb() {
 
-	dsn := os.Getenv("dsn")
+	// dsn := os.Getenv("dsn")
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Failed to connect to the database! \n", err.Error())
-	}
-
-	// db, err := gorm.Open(sqlite.Open("api.db"), &gorm.Config{})
-
+	// db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	// if err != nil {
 	// 	log.Fatal("Failed to connect to the database! \n", err.Error())
 	// }
+
+	db, err := gorm.Open(sqlite.Open("api.db"), &gorm.Config{})
+
+	if err != nil {
+		log.Fatal("Failed to connect to the database! \n", err.Error())
+	}
 
 	log.Println("Connected to the database successfully")
 	db.Logger = logger.Default.LogMode(logger.Info)

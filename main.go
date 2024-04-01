@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 
 	"github.com/Gerardo02/Back-Fiber/database"
 	"github.com/Gerardo02/Back-Fiber/src/routes"
@@ -98,12 +97,14 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "https://iridescent-kashata-1069bf.netlify.app",
+		AllowOrigins: "http://localhost:5173",
 	}))
 
 	// secretKey := utils.GoDotEnvVariable("SECRET_KEY")
 	setupRoutes(app)
-	PORT := os.Getenv("PORT")
+	// PORT := os.Getenv("PORT")
+
+	PORT := "3030"
 
 	if PORT == "" {
 		PORT = "3000"
