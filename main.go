@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/Gerardo02/Back-Fiber/database"
 	"github.com/Gerardo02/Back-Fiber/src/routes"
@@ -102,9 +103,9 @@ func main() {
 
 	// secretKey := utils.GoDotEnvVariable("SECRET_KEY")
 	setupRoutes(app)
-	// PORT := os.Getenv("PORT")
+	PORT := os.Getenv("PORT")
 
-	PORT := "3030"
+	// PORT := "3030"
 
 	if PORT == "" {
 		PORT = "3000"
